@@ -2,7 +2,7 @@
 import numpy as np
 from tensor import Tensor, Node
 
-from gradfns import sumBackward
+from gradfns import *
 
 
 def tensorSum(tensor: Tensor) -> Tensor:
@@ -19,8 +19,35 @@ def tensorSum(tensor: Tensor) -> Tensor:
 
 
 def tensorAdd(t1: Tensor, t2: Tensor) -> Tensor:
+    """Performs element wise addition to two Tensors"""
 
-    data = t1.data + t2.data
+    if t1.shape == t2.shape:
+        data = t1.data + t2.data
+    else:
+        raise RuntimeError("Broadcasting not implemented")
+        pass
+
     requiresGrad = t1.requiresGrad or t2.requiresGrad
+    resultTensor = Tensor(data, requiresGrad)
 
-    # ToDo
+    if t1.requiresGrad:
+        resultTensor.__addParent(t1, addBackward)
+    if t2.requiresGrad:
+        resultTensor.__addParent(t2, addBackward)
+
+    return resultTensor
+
+def tensorMatMul(t1: Tensor, t2: Tensor) -> Tensor:
+
+    data = np.matmul(t1.data, t2.data)
+    requiresGrad = t1.requiresGrad or t2.requiresGrad
+    resultTensor = Tensor(data, requiresGrad)
+
+    if t1.requiresGrad:
+        resultTensor.__addParent(t1, matmulBackward0)
+    if t2.requiresGrad:
+        resultTensor.__addParent(t2, matmutBackward1)
+
+    return resultTensor
+
+
