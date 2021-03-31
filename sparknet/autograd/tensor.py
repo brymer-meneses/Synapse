@@ -22,7 +22,7 @@ def ensureArray(arrayable: Arrayable) -> np.ndarray:
 
 class Node(NamedTuple):
     tensor: 'Tensor'
-    gradfn = Callable[['Tensor'], 'Tensor']
+    gradfn: Callable[['Tensor'], 'Tensor']
 
 
 class Tensor:
@@ -41,13 +41,16 @@ class Tensor:
     def __repr__(self):
         return f"Tensor: {self.shape}, requiresGrad: {self.requiresGrad}"
 
-    def __addParent(self, node: Node) -> None:
+    def addParent(self, node: Node) -> None:
         self.parentNodes.append(node)
         return
 
     def zeroGrad(self) -> None:
         self.grad = Tensor(np.zeros_like(self.data, dtype=np.float64))
         return
+
+    def __mul__(self, tensor: 'Tensor') -> 'Tensor':
+        from sparknet.autograd.ops import tensorMul
 
     def __add__(self, tensor: 'Tensor') -> 'Tensor':
         from sparknet.autograd.ops import tensorAdd
