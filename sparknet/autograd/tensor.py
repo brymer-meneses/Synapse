@@ -10,7 +10,6 @@ from typing import Union, Optional, List, NamedTuple, Callable
 
 import numpy as np
 
-from ops import tensorSum, tensorAdd
 
 Arrayable = Union[float, list, np.ndarray]
 
@@ -31,7 +30,7 @@ class Tensor:
     def __init__(self, data: Arrayable, requiresGrad: bool = False) -> None:
         self.data = ensureArray(data)
         self.requiresGrad = requiresGrad
-        self.shape = data.shape
+        self.shape = self.data.shape
         self.grad: Optional['Tensor'] = None
         self.parentNodes: List[Node] = []
 
@@ -39,6 +38,8 @@ class Tensor:
             self.zeroGrad()
 
         return
+    def __repr__(self):
+        return f"Tensor: {self.shape}, requiresGrad: {self.requiresGrad}"
 
     def __addParent(self, node: Node) -> None:
         self.parentNodes.append(node)
@@ -49,9 +50,11 @@ class Tensor:
         return
 
     def __add__(self, tensor: 'Tensor') -> 'Tensor':
+        from sparknet.autograd.ops import tensorAdd
         return tensorAdd(self, tensor)
 
     def sum(self) -> 'Tensor':
+        from sparknet.autograd.ops import tensorSum
         return tensorSum(self)
 
     def backwards(self, grad: 'Tensor' = None) -> None:

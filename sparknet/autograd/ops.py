@@ -1,11 +1,10 @@
 
 import numpy as np
-from tensor import Tensor, Node
-
-from gradfns import *
 
 
-def tensorSum(tensor: Tensor) -> Tensor:
+
+def tensorSum(tensor: 'Tensor') -> 'Tensor':
+    from sparknet.autograd.tensor import Tensor
 
     data = tensor.data.sum()
     requiresGrad = tensor.requiresGrad
@@ -18,8 +17,9 @@ def tensorSum(tensor: Tensor) -> Tensor:
     return resultTensor
 
 
-def tensorAdd(t1: Tensor, t2: Tensor) -> Tensor:
+def tensorAdd(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
     """Performs element wise addition to two Tensors"""
+    from sparknet.autograd.tensor import Tensor
 
     if t1.shape == t2.shape:
         data = t1.data + t2.data
@@ -37,7 +37,8 @@ def tensorAdd(t1: Tensor, t2: Tensor) -> Tensor:
 
     return resultTensor
 
-def tensorMatMul(t1: Tensor, t2: Tensor) -> Tensor:
+def tensorMatMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
+    from sparknet.autograd.tensor import Tensor
 
     data = np.matmul(t1.data, t2.data)
     requiresGrad = t1.requiresGrad or t2.requiresGrad

@@ -2,9 +2,8 @@
 # Lists all the functions used in backpropagation
 
 import numpy as np
-from tensor import Tensor
 
-def sumBackward(tensor: Tensor, grad: np.ndarray) -> np.ndarray:
+def sumBackward(tensor: 'Tensor', grad: np.ndarray) -> np.ndarray:
     """Gradient Function that is used when
        tensor.sum() is executed in the
        computation graph
