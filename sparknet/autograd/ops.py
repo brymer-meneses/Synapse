@@ -1,4 +1,5 @@
 
+from typing import Callable
 import numpy as np
 
 
@@ -14,7 +15,7 @@ def tensorSum(tensor: 'Tensor') -> 'Tensor':
     resultTensor: Tensor = Tensor(data, requiresGrad)
 
     if requiresGrad:
-        node = Node(tensor, sumBackward)
+        node = Node(tensor, lambda grad: sumBackward(grad, t1, t2))
         resultTensor.addParent(node)
 
     return resultTensor
@@ -36,10 +37,10 @@ def tensorAdd(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
     resultTensor = Tensor(data, requiresGrad)
 
     if t1.requiresGrad:
-        node = Node(t1, addBackward)
+        node = Node(t1, lambda grad: addBackward(grad, t1, t2))
         resultTensor.addParent(node)
     if t2.requiresGrad:
-        node = Node(t2, addBackward)
+        node = Node(t2, lambda grad: addBackward(grad, t1, t2))
         resultTensor.addParent(node)
 
     return resultTensor
@@ -59,10 +60,10 @@ def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
     resultTensor = Tensor(data, requiresGrad)
 
     if t1.requiresGrad:
-        node = Node(t1, mulBackward)
+        node = Node(t1, lambda grad: mulBackward(grad, t1, t2))
         resultTensor.addParent(node)
     if t2.requiresGrad:
-        node = Node(t2, mulBackward)
+        node = Node(t2, lambda grad: mulBackward(grad, t1, t2))
         resultTensor.addParent(node)
 
     return resultTensor
@@ -76,10 +77,10 @@ def tensorMatMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
     resultTensor = Tensor(data, requiresGrad)
 
     if t1.requiresGrad:
-        node = Node(t1, matmulBackward0)
+        node = Node(t1, lambda grad: matmulBackward0(grad, t1, t2))
         resultTensor.addParent(node)
     if t2.requiresGrad:
-        node = Node(t2, matmulBackward1)
+        node = Node(t2, lambda grad: matmulBackward1(grad, t1, t2))
         resultTensor.addParent(node)
 
     return resultTensor

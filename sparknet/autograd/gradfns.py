@@ -3,20 +3,17 @@
 
 import numpy as np
 
-def sumBackward(tensor: 'Tensor', grad: np.ndarray) -> np.ndarray:
+def sumBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     """Gradient Function that is used when
        tensor.sum() is executed in the
        computation graph
 
-       Paremeters:
-            tensor: Tensor
-            grad: np.ndarray
 
     """
 
-    return grad*np.ones_like(tensor.data)
+    return grad*np.ones_like(t1.data)
 
-def addBackward(grad: np.ndarray) -> np.ndarray:
+def addBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     """Gradient function that is used when
        a tensor that requires gradient is added
        element wise to another tensor.
@@ -29,29 +26,23 @@ def addBackward(grad: np.ndarray) -> np.ndarray:
 
     return grad
 
-def mulBackward(otherTensorData: np.ndarray, grad: np.ndarray) -> np.ndarray:
+def mulBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     """Gradient function that is used when
        a tensor that requires gradient is multiplied
        element-wise to another tensor
 
-       - Paremeters:
-            tensor: Tensor
-            grad: np.ndarray
 
        - Math:
            Y = A * B
            dY/dA = B
            dY/dB = A
     """
-    return grad * otherTensorData
+    return grad * t2.data
 
-def matmulBackward0(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
+def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     """Gradient Function that is used when
        a tensor that requires gradient is matrix-multiplied
        to another tensor
-       - Paremeters:
-            t2Data: np.ndarray
-            grad: np.ndarray
 
        - Math:
           let A.shape == m x n
@@ -62,24 +53,21 @@ def matmulBackward0(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
            dF/dA = dF/dY dY/dA
 
            returns:
-                dF/dA = grad * A.T
+                dF/dA = grad * B.T
 
            where:
                 dF/dY -> grad
 
            returns:
     """
-    return np.matmul(grad, t2Data.T)
+    return np.matmul(grad, t2.data.T)
 
 
-def matmulBackward1(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
+def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     """Gradient Function that is used when
        a tensor is matrix multiplied to a tensor that
        requires gradient.
 
-       - Paremeters:
-            tensor: Tensor
-            grad: np.ndarray
 
        - Math:
           let A.shape == m x n
@@ -89,7 +77,7 @@ def matmulBackward1(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
            F(Y) = L
            dF/dB =  (dY/dB).T dF/dY
            returns:
-                dF/dB = B.T * grad
+                dF/dB = A.T * grad
 
 
            where:
@@ -97,4 +85,4 @@ def matmulBackward1(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
 
     """
 
-    return np.matmul(B.T, grad)
+    return np.matmul(t1.data.T, grad)
