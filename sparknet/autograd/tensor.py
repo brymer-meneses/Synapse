@@ -51,10 +51,15 @@ class Tensor:
 
     def __mul__(self, tensor: 'Tensor') -> 'Tensor':
         from sparknet.autograd.ops import tensorMul
+        return tensorMul(self, tensor)
 
     def __add__(self, tensor: 'Tensor') -> 'Tensor':
         from sparknet.autograd.ops import tensorAdd
         return tensorAdd(self, tensor)
+
+    def __matmul__(self, tensor: 'Tensor') -> 'Tensor':
+        from sparknet.autograd.ops import tensorMatMul
+        return tensorMatMul(self, tensor)
 
     def sum(self) -> 'Tensor':
         from sparknet.autograd.ops import tensorSum

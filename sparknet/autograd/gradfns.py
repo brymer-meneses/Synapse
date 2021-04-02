@@ -72,7 +72,7 @@ def matmulBackward0(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
     return np.matmul(grad, t2Data.T)
 
 
-def matmulBackward0(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
+def matmulBackward1(grad: np.ndarray, t2Data: np.ndarray) -> np.ndarray:
     """Gradient Function that is used when
        a tensor is matrix multiplied to a tensor that
        requires gradient.

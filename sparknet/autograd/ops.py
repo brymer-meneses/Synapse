@@ -68,8 +68,8 @@ def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
     return resultTensor
 
 def tensorMatMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
-    from sparknet.autograd.tensor import Tensor
-    from sparknet.autograd.gradfns import matmutBackward1, matmulBackward0
+    from sparknet.autograd.tensor import Tensor, Node
+    from sparknet.autograd.gradfns import matmulBackward1, matmulBackward0
 
     data = np.matmul(t1.data, t2.data)
     requiresGrad = t1.requiresGrad or t2.requiresGrad
@@ -79,7 +79,7 @@ def tensorMatMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor':
         node = Node(t1, matmulBackward0)
         resultTensor.addParent(node)
     if t2.requiresGrad:
-        node = Node(t2, matmutBackward1)
+        node = Node(t2, matmulBackward1)
         resultTensor.addParent(node)
 
     return resultTensor
