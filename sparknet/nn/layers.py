@@ -22,6 +22,7 @@ class Linear(Layer):
             requiresGrad=True)
 
         if useBias:
+
             # self.bias must handle broadcasting
             # but idk how to implement it
             self.bias = Tensor(
@@ -38,7 +39,6 @@ class Linear(Layer):
 
         # self.weights.shape == out x in
         # x.shape == in x num
-        # self.output.shape == out x num
         return self._output
 
     def backwards(self, grad: 'Tensor') -> 'Tensor':
