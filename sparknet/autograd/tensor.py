@@ -21,8 +21,8 @@ def ensureArray(arrayable: Arrayable) -> np.ndarray:
 
 
 class Node(NamedTuple):
-    tensor: Tensor
-    gradfn: Callable[[Tensor], Tensor]
+    tensor: 'Tensor'
+    gradfn: Callable[['Tensor'], np.ndarray]
 
 
 class Tensor:
