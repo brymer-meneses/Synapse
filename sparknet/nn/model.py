@@ -7,20 +7,20 @@ class Model:
     def __init__(self):
         raise NotImplementedError
 
-    def __call__(self, input):
+    def __call__(self, input) -> Tensor:
         if not isinstance(input, Tensor):
             raise RuntimeError(f"Expected Tensor received: {typeof(input)}")
 
-        self.forward(input)
-        return
+        result = self.forward(input)
+        return result
 
-    def forward(self, x):
+    def forward(self, x) -> Tensor:
         raise NotImplementedError
 
     def fit(self, x_train, y_train):
         raise NotImplementedError
 
-    def backward(self, grad: 'Tensor'):
+    def backwards(self, grad: 'Tensor'):
         layers = []
         attributes = vars(self)
 

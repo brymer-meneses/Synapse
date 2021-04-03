@@ -71,7 +71,11 @@ def tensorMatMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
     from sparknet.autograd.tensor import Tensor, Node
     from sparknet.autograd.gradfns import matmulBackward1, matmulBackward0
 
-    data = np.matmul(t1.data, t2.data)
+    try:
+        data = np.matmul(t1.data, t2.data)
+    except Exception as e:
+        raise RuntimeError(f"Caught Exception while trying to matrix-multiply tensors\n \
+                            t1: {t1.shape}, t2: {t2.shape}")
     requiresGrad = t1.requiresGrad or t2.requiresGrad
     resultTensor = Tensor(data, requiresGrad)
 

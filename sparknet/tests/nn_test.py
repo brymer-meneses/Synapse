@@ -15,7 +15,7 @@ class TestNN(TestCase):
                 self.linear1 = Linear(64, 32)
                 self.linear2 = Linear(32, 16)
                 self.linear3 = Linear(16, 8)
-                self.linear4 = Linear(16, 4)
+                self.linear4 = Linear(8, 4)
                 self.linear5 = Linear(4, 2)
                 self.final = Linear(2, 1)
 
@@ -29,9 +29,9 @@ class TestNN(TestCase):
                 return x
 
         model = NN()
-        testInput = Tensor(np.random.randn(64, 32))
+        testInput = Tensor(np.random.randn(64, 1))
         testOutput = model(testInput)
-        assert testOutput.shape == (2, 1)
+        assert testOutput.shape == (1, 1)
 
 
 

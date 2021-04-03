@@ -14,19 +14,31 @@ class Layer:
 
 
 class Linear(Layer):
-    def __init__(self, in_features: int ,out_features: int) -> None:
+    def __init__(self, in_features: int ,out_features: int, useBias=False) -> None:
+        self.useBias = useBias
 
         self.weights = Tensor(
-            np.random.randn(in_features, out_features),
+            data=np.random.randn(out_features, in_features),
             requiresGrad=True)
 
-        self.bias = Tensor(
-            np.random.randn(in_features, out_features),
-            requiresGrad=True)
+        if useBias:
+            # self.bias must handle broadcasting
+            # but idk how to implement it
+            self.bias = Tensor(
+                np.random.randn(out_features, 1),
+                requiresGrad=True)
 
     def __call__(self, x: 'Tensor') -> 'Tensor':
         """Forward Propagation"""
-        self._output = self.weights @ x + self.bias
+
+        if self.useBias:
+            self._output = self.weights @ x + self.bias
+        else:
+            self._output = self.weights @ x
+
+        # self.weights.shape == out x in
+        # x.shape == in x num
+        # self.output.shape == out x num
         return self._output
 
     def backwards(self, grad: 'Tensor') -> 'Tensor':
