@@ -21,8 +21,8 @@ def ensureArray(arrayable: Arrayable) -> np.ndarray:
 
 
 class Node(NamedTuple):
-    tensor: 'Tensor'
-    gradfn: Callable[['Tensor'], 'Tensor']
+    tensor: Tensor
+    gradfn: Callable[[Tensor], Tensor]
 
 
 class Tensor:
@@ -39,7 +39,7 @@ class Tensor:
 
         return
     def __repr__(self):
-        return f"Tensor: {self.shape}, requiresGrad: {self.requiresGrad}"
+        return f"<Tensor: {self.shape}, requiresGrad: {self.requiresGrad}>"
 
     def addParent(self, node: Node) -> None:
         self.parentNodes.append(node)
@@ -69,14 +69,13 @@ class Tensor:
         """Executes backpropagation and evaluates
            the gradients of Tensors with
            'requiresGrad = True'. """
-
         if grad is None:
             if self.shape == ():
-                self.grad = Tensor(1.0)
+                grad = Tensor(1.0)
             else:
                 raise RuntimeError("grad must be specified for non-zero tensor")
 
-        self.grad.data = self.grad.data + grad.data
+        self.grad.data = self.grad.data + grad.data #type: ignore
 
         for node in self.parentNodes:
 
@@ -86,7 +85,7 @@ class Tensor:
             # localGrad represents the derivative 
             # of this tensor with respect to 
             # its parent tensor
-            localGrad = Tensor(node.gradfn(grad))
+            localGrad = Tensor(node.gradfn(grad.data))
 
             # Propagate gradients to the each parent 
             # node

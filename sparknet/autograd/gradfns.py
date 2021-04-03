@@ -2,8 +2,9 @@
 # Lists all the functions used in backpropagation
 
 import numpy as np
+from sparknet.autograd.tensor import Tensor
 
-def sumBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+def sumBackward(grad: np.ndarray, t1: 'Tensor') -> np.ndarray:
     """Gradient Function that is used when
        tensor.sum() is executed in the
        computation graph
@@ -26,7 +27,7 @@ def addBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
 
     return grad
 
-def mulBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+def mulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     """Gradient function that is used when
        a tensor that requires gradient is multiplied
        element-wise to another tensor
@@ -38,6 +39,19 @@ def mulBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
            dY/dB = A
     """
     return grad * t2.data
+
+def mulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+    """Gradient function that is used when
+       a tensor that requires gradient is multiplied
+       element-wise to another tensor
+
+
+       - Math:
+           Y = A * B
+           dY/dA = B
+           dY/dB = A
+    """
+    return grad * t1.data
 
 def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     """Gradient Function that is used when
