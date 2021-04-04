@@ -9,7 +9,7 @@ class Model:
 
     def __call__(self, input) -> Tensor:
         if not isinstance(input, Tensor):
-            raise RuntimeError(f"Expected Tensor received: {typeof(input)}")
+            raise RuntimeError(f"Expected Tensor received: {type(input)}")
 
         result = self.forward(input)
         return result

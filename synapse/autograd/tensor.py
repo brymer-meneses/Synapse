@@ -47,6 +47,9 @@ class Tensor:
     def __repr__(self):
         return f"<Tensor: {self.shape}, requiresGrad: {self.requiresGrad}>"
 
+    def __str__(self):
+        return f"Tensor: {str(self.data)}"
+
     def addParent(self, node: Node) -> None:
         self.parentNodes.append(node)
         return
