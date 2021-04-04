@@ -6,7 +6,6 @@ import numpy as np
 # Note: 
 # All activation layers inherit from the "Layer" base class
 
-# TODO NOT COMPLETE
 
 
 class Activation(Layer):
