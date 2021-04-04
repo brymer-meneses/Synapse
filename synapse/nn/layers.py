@@ -54,10 +54,10 @@ class Linear(Layer):
 
         # self.weights.shape == out x in
         # x.shape == in x num
-        return self._output
+        return self.__output
 
     def __str__(self) -> str:
-        return f'\n== {self.__name} == \
+        return f'* {self.__name}\
             \n\t- in features: {self.__inFeatures}\
             \n\t- out features: {self.__outFeatures}'
 

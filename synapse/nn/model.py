@@ -4,7 +4,6 @@ from synapse.nn.layers import Layer
 from synapse.nn.optimizers import Optimizer
 
 class Model:
-    __isCompiled == False
 
     def __init__(self) -> None:
         raise NotImplementedError
@@ -25,9 +24,14 @@ class Model:
     def summary(self) -> None:
         if not self.__isCompiled:
             raise RuntimeError("Model not compiled")
+        print("\n")
+        print("==================== Model ====================")
+
         for layer in self.__layers:
             print(layer)
         print(self.__optimizer)
+
+        print("==============================================")
 
     def compile(self, optimizer: Optimizer) -> None:
         self.__optimizer = optimizer
@@ -44,7 +48,7 @@ class Model:
 
     def backwards(self, grad: 'Tensor'):
 
-        for layer in reversed(layers):
+        for layer in reversed(self.__layers):
             grad = layer.backwards(grad)
 
         self.grad = grad

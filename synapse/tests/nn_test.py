@@ -3,6 +3,8 @@ from unittest import TestCase
 
 from synapse.nn.model import Model
 from synapse.nn.layers import Linear
+from synapse.nn.optimizers import SGD
+
 from synapse.autograd.tensor import Tensor
 
 import numpy as np
@@ -29,6 +31,11 @@ class TestNN(TestCase):
                 return x
 
         model = NN()
+        sgd = SGD(lr=0.002)
+        model.compile(sgd)
+        model.summary()
+        model.backwards(Tensor(1.0))
+
         testInput = Tensor(np.random.randn(64, 1))
         testOutput = model(testInput)
         assert testOutput.shape == (1, 1)

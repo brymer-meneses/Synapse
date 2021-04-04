@@ -26,6 +26,7 @@ def tensorAdd(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
 
     from synapse.autograd.tensor import Tensor, Node
     from synapse.autograd.gradfns import addBackward
+    from synapse import GradState
 
     if t1.shape == t2.shape:
         data = t1.data + t2.data
@@ -49,6 +50,7 @@ def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
 
     from synapse.autograd.tensor import Tensor, Node
     from synapse.autograd.gradfns import mulBackward0, mulBackward1
+    from synapse import GradState
 
     if t1.shape == t2.shape:
         data = t1.data * t2.data
@@ -70,6 +72,7 @@ def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
 def matmul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
     from synapse.autograd.tensor import Tensor, Node
     from synapse.autograd.gradfns import matmulBackward1, matmulBackward0
+    from synapse import GradState
 
     try:
         data = np.matmul(t1.data, t2.data)

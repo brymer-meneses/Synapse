@@ -1,6 +1,6 @@
 
 from synapse import Tensor
-from synapse.autograd.layers import Layer
+from synapse.nn.layers import Layer
 import synapse as sn
 
 class Optimizer:
@@ -16,7 +16,7 @@ class SGD(Optimizer):
         self.__lr = lr
 
     def __str__(self) -> str:
-        return f'Optimizer: SGD \
+        return f'\n=> Optimizer: SGD \
             \n\t- lr {self.__lr}'
 
     def step(self, layer: Layer) -> None:
