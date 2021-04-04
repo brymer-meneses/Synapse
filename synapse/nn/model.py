@@ -47,11 +47,9 @@ class Model:
         return
 
     def backwards(self, grad: 'Tensor'):
+        lastLayer = self.__layers[-1]
+        lastLayer.backwards(grad)
 
-        for layer in reversed(self.__layers):
-            grad = layer.backwards(grad)
-
-        self.grad = grad
         return
 
 

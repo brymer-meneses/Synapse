@@ -46,6 +46,7 @@ class Linear(Layer):
 
     def __call__(self, x: 'Tensor') -> 'Tensor':
         """Forward Propagation"""
+        self.__input = x
 
         if self.useBias:
             self.__output = self.weights @ x + self.bias
@@ -54,16 +55,16 @@ class Linear(Layer):
 
         # self.weights.shape == out x in
         # x.shape == in x num
+        # self.__output.shape == out x num
         return self.__output
 
     def __str__(self) -> str:
-        return f'* {self.__name}\
-            \n\t- in features: {self.__inFeatures}\
-            \n\t- out features: {self.__outFeatures}'
+        return f'* {self.__name} = ({self.__inFeatures}, {self.__outFeatures})'
 
-    def backwards(self, grad: 'Tensor') -> 'Tensor':
+    def backwards(self, grad: 'Tensor') -> None:
         self.__output.backwards(grad)
-        return self.__output.grad
+        return
+
 
 
 

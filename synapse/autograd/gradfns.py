@@ -74,7 +74,16 @@ def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
 
            returns:
     """
-    return np.matmul(grad, t2.data.T)
+    try:
+        result = np.matmul(grad, t2.data.T)
+    except:
+        print(grad)
+        print(t2.data.T)
+        raise RuntimeError(f"Caught Exception while \
+                           trying to perform matrix-multiplication two \
+                           matrices with shape: {grad.shape} {t2.data.T.shape}")
+
+    return result
 
 
 def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
@@ -98,5 +107,12 @@ def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
                 dF/dY -> grad
 
     """
+    try:
+        result = np.matmul(t1.data.T, grad)
+    except:
+        raise RuntimeError(f"Caught Exception while \
+                           trying to perform matrix-multiplication two \
+                           matrices with shape: {t1.data.T.shape} {grad.shape}")
 
-    return np.matmul(t1.data.T, grad)
+
+    return result

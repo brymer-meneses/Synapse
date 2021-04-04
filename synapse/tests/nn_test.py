@@ -10,7 +10,26 @@ from synapse.autograd.tensor import Tensor
 import numpy as np
 
 class TestNN(TestCase):
-    def testModel(self):
+    def testModelBackward(self):
+        class NN(Model):
+            def __init__(self):
+                self.linear1 = Linear(10, 5)
+                self.linear2 = Linear(5, 1)
+            def forward(self, x):
+                x = self.linear1(x)
+                x = self.linear2(x)
+                return x
+
+        model = NN()
+        sgd = SGD(lr=0.01)
+        model.compile(sgd)
+
+        testData = Tensor(np.random.uniform(10, -10, size=(10,1)))
+        output = model(testData)
+        testGrad = Tensor(np.random.uniform(10, -10, size=(1,1)))
+        model.backwards(testGrad)
+        return
+    def testModelCreation(self):
 
         class NN(Model):
             def __init__(self):
@@ -33,12 +52,13 @@ class TestNN(TestCase):
         model = NN()
         sgd = SGD(lr=0.002)
         model.compile(sgd)
-        model.summary()
-        model.backwards(Tensor(1.0))
+        # model.summary()
 
         testInput = Tensor(np.random.randn(64, 1))
         testOutput = model(testInput)
         assert testOutput.shape == (1, 1)
+
+
 
 
 

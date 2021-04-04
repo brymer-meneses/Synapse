@@ -78,6 +78,7 @@ class Tensor:
         """Executes backpropagation and evaluates
            the gradients of Tensors with
            'requiresGrad = True'. """
+        assert self.requiresGrad == True, "Called backwards on a tensor that doesn't require gradients"
 
         if grad is None:
             if self.shape == ():
