@@ -8,12 +8,13 @@ def tensorSum(t1: 'Tensor') -> 'Tensor': #type: ignore
 
     from synapse.autograd.tensor import Tensor, Node
     from synapse.autograd.gradfns import sumBackward
+    from synapse import GradState
 
     data = t1.data.sum()
     requiresGrad = t1.requiresGrad
     resultTensor: 'Tensor' = Tensor(data, requiresGrad)
 
-    if requiresGrad:
+    if requiresGrad and GradState.evalGrad():
         node = Node(t1, lambda grad: sumBackward(grad, t1))
         resultTensor.addParent(node)
 
@@ -35,10 +36,10 @@ def tensorAdd(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
     requiresGrad = t1.requiresGrad or t2.requiresGrad
     resultTensor = Tensor(data, requiresGrad)
 
-    if t1.requiresGrad:
+    if t1.requiresGrad and GradState.evalGrad():
         node = Node(t1, lambda grad: addBackward(grad, t1, t2))
         resultTensor.addParent(node)
-    if t2.requiresGrad:
+    if t2.requiresGrad and GradState.evalGrad():
         node = Node(t2, lambda grad: addBackward(grad, t1, t2))
         resultTensor.addParent(node)
 
@@ -57,10 +58,10 @@ def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
     requiresGrad = t1.requiresGrad or t2.requiresGrad
     resultTensor = Tensor(data, requiresGrad)
 
-    if t1.requiresGrad:
+    if t1.requiresGrad and GradState.evalGrad():
         node = Node(t1, lambda grad: mulBackward0(grad, t1, t2))
         resultTensor.addParent(node)
-    if t2.requiresGrad:
+    if t2.requiresGrad and GradState.evalGrad():
         node = Node(t2, lambda grad: mulBackward1(grad, t1, t2))
         resultTensor.addParent(node)
 
@@ -78,10 +79,10 @@ def matmul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
     requiresGrad = t1.requiresGrad or t2.requiresGrad
     resultTensor = Tensor(data, requiresGrad)
 
-    if t1.requiresGrad:
+    if t1.requiresGrad and GradState.evalGrad():
         node = Node(t1, lambda grad: matmulBackward0(grad, t1, t2))
         resultTensor.addParent(node)
-    if t2.requiresGrad:
+    if t2.requiresGrad and GradState.evalGrad():
         node = Node(t2, lambda grad: matmulBackward1(grad, t1, t2))
         resultTensor.addParent(node)
 
