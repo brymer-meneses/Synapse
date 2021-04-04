@@ -8,6 +8,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 class TestTensorOps(TestCase):
+
     def testSum(self):
         data1 = np.random.uniform(0, 10, size=(5,5))
 

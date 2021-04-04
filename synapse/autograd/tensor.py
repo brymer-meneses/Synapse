@@ -28,13 +28,19 @@ class Node(NamedTuple):
 class Tensor:
 
     def __init__(self, data: Arrayable, requiresGrad: bool = False) -> None:
+        from synapse import GradState
+
         self.data = ensureArray(data)
-        self.requiresGrad = requiresGrad
         self.shape = self.data.shape
         self.grad: Optional['Tensor'] = None
         self.parentNodes: List[Node] = []
 
-        if requiresGrad:
+        if GradState.evalGrad():
+            self.requiresGrad = requiresGrad
+        else:
+            self.requiresGrad = False
+
+        if self.requiresGrad:
             self.zeroGrad()
 
         return
@@ -69,6 +75,7 @@ class Tensor:
         """Executes backpropagation and evaluates
            the gradients of Tensors with
            'requiresGrad = True'. """
+
         if grad is None:
             if self.shape == ():
                 grad = Tensor(1.0)

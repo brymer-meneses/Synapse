@@ -9,7 +9,6 @@ def tensorSum(t1: 'Tensor') -> 'Tensor': #type: ignore
     from synapse.autograd.tensor import Tensor, Node
     from synapse.autograd.gradfns import sumBackward
 
-
     data = t1.data.sum()
     requiresGrad = t1.requiresGrad
     resultTensor: 'Tensor' = Tensor(data, requiresGrad)
