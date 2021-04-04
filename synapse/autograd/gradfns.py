@@ -77,8 +77,6 @@ def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
     try:
         result = np.matmul(grad, t2.data.T)
     except:
-        print(grad)
-        print(t2.data.T)
         raise RuntimeError(f"Caught Exception while \
                            trying to perform matrix-multiplication two \
                            matrices with shape: {grad.shape} {t2.data.T.shape}")

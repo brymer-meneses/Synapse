@@ -48,7 +48,7 @@ class Tensor:
         return f"<Tensor: {self.shape}, requiresGrad: {self.requiresGrad}>"
 
     def __str__(self):
-        return f"Tensor: {str(self.data)}"
+        return f"Tensor, requiresGrad={self.requiresGrad} \n{str(self.data)}"
 
     def addParent(self, node: Node) -> None:
         self.parentNodes.append(node)
@@ -88,7 +88,7 @@ class Tensor:
 
         self.grad.data = self.grad.data + grad.data #type: ignore
 
-        for node in self.parentNodes:
+        for node in reversed(self.parentNodes):
 
             # Calculate the gradient of this node 
             # with respect to the parent node.
