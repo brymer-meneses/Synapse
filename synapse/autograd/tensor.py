@@ -50,19 +50,19 @@ class Tensor:
         return
 
     def __mul__(self, tensor: 'Tensor') -> 'Tensor':
-        from sparknet.autograd.ops import tensorMul
+        from synapse.autograd.ops import tensorMul
         return tensorMul(self, tensor)
 
     def __add__(self, tensor: 'Tensor') -> 'Tensor':
-        from sparknet.autograd.ops import tensorAdd
+        from synapse.autograd.ops import tensorAdd
         return tensorAdd(self, tensor)
 
     def __matmul__(self, tensor: 'Tensor') -> 'Tensor':
-        from sparknet.autograd.ops import tensorMatMul
-        return tensorMatMul(self, tensor)
+        from synapse.autograd.ops import matmul
+        return matmul(self, tensor)
 
     def sum(self) -> 'Tensor':
-        from sparknet.autograd.ops import tensorSum
+        from synapse.autograd.ops import tensorSum
         return tensorSum(self)
 
     def backwards(self, grad: 'Tensor' = None) -> None:

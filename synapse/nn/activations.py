@@ -1,6 +1,6 @@
 
-from sparknet.nn.layers import Layer
-from sparknet.autograd.tensor import Tensor
+from synapse.nn.layers import Layer
+from synapse.autograd.tensor import Tensor
 import numpy as np
 
 # Note: 

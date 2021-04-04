@@ -1,5 +1,5 @@
 
-from sparknet.autograd.tensor import Tensor
+from synapse.autograd.tensor import Tensor
 import numpy as np
 
 class Layer:

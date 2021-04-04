@@ -6,8 +6,8 @@ import numpy as np
 
 def tensorSum(t1: 'Tensor') -> 'Tensor': #type: ignore
 
-    from sparknet.autograd.tensor import Tensor, Node
-    from sparknet.autograd.gradfns import sumBackward
+    from synapse.autograd.tensor import Tensor, Node
+    from synapse.autograd.gradfns import sumBackward
 
 
     data = t1.data.sum()
@@ -24,8 +24,8 @@ def tensorSum(t1: 'Tensor') -> 'Tensor': #type: ignore
 def tensorAdd(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
     """Performs element wise addition to two Tensors"""
 
-    from sparknet.autograd.tensor import Tensor, Node
-    from sparknet.autograd.gradfns import addBackward
+    from synapse.autograd.tensor import Tensor, Node
+    from synapse.autograd.gradfns import addBackward
 
     if t1.shape == t2.shape:
         data = t1.data + t2.data
@@ -47,8 +47,8 @@ def tensorAdd(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
 
 def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
 
-    from sparknet.autograd.tensor import Tensor, Node
-    from sparknet.autograd.gradfns import mulBackward0, mulBackward1
+    from synapse.autograd.tensor import Tensor, Node
+    from synapse.autograd.gradfns import mulBackward0, mulBackward1
 
     if t1.shape == t2.shape:
         data = t1.data * t2.data
@@ -67,9 +67,9 @@ def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
 
     return resultTensor
 
-def tensorMatMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
-    from sparknet.autograd.tensor import Tensor, Node
-    from sparknet.autograd.gradfns import matmulBackward1, matmulBackward0
+def matmul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
+    from synapse.autograd.tensor import Tensor, Node
+    from synapse.autograd.gradfns import matmulBackward1, matmulBackward0
 
     try:
         data = np.matmul(t1.data, t2.data)

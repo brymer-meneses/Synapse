@@ -1,3 +1,5 @@
 
-from sparknet.autograd.tensor import Tensor as tensor
-from sparknet.autograd.ops import tensorMatMul as matmul
+from synapse.autograd.tensor import Tensor
+from synapse.autograd.ops import matmul
+
+

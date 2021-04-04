@@ -1,9 +1,9 @@
 import pytest
 from unittest import TestCase
 
-from sparknet.nn.model import Model
-from sparknet.nn.layers import Linear
-from sparknet.autograd.tensor import Tensor
+from synapse.nn.model import Model
+from synapse.nn.layers import Linear
+from synapse.autograd.tensor import Tensor
 
 import numpy as np
 

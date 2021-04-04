@@ -2,7 +2,7 @@
 # Lists all the functions used in backpropagation
 
 import numpy as np
-from sparknet.autograd.tensor import Tensor
+from synapse.autograd.tensor import Tensor
 
 def sumBackward(grad: np.ndarray, t1: 'Tensor') -> np.ndarray:
     """Gradient Function that is used when

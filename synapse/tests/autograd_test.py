@@ -1,7 +1,7 @@
 
 from unittest import TestCase
 
-import sparknet as sn
+import synapse as sn
 import numpy as np
 from numpy.testing import assert_array_equal
 
@@ -10,11 +10,11 @@ class TestAutograd(TestCase):
         d1 = np.random.uniform(0,10, size=(5,5))
         d2 = np.random.uniform(0,10, size=(5,5))
 
-        t1 = sn.tensor(d1, requiresGrad=True)
-        t2 = sn.tensor(d2, requiresGrad=True)
+        t1 = sn.Tensor(d1, requiresGrad=True)
+        t2 = sn.Tensor(d2, requiresGrad=True)
         t3 = t1 * t2 # 5x5
 
-        initialGrad = sn.tensor(np.ones_like(t1.data))
+        initialGrad = sn.Tensor(np.ones_like(t1.data))
         t3.backwards(initialGrad)
 
         assert_array_equal(t1.grad.data, t2.data)
@@ -24,11 +24,11 @@ class TestAutograd(TestCase):
         d1 = np.random.uniform(0,10, size=(5,5))
         d2 = np.random.uniform(0,10, size=(5,5))
 
-        t1 = sn.tensor(d1, requiresGrad=True)
-        t2 = sn.tensor(d2, requiresGrad=True)
+        t1 = sn.Tensor(d1, requiresGrad=True)
+        t2 = sn.Tensor(d2, requiresGrad=True)
         t3 = t1 + t2
 
-        initialGrad = sn.tensor(np.ones_like(t1.data))
+        initialGrad = sn.Tensor(np.ones_like(t1.data))
         t3.backwards(initialGrad)
 
         assert_array_equal(t1.grad.data, np.ones_like(t2.data))
@@ -36,7 +36,7 @@ class TestAutograd(TestCase):
 
     def testSumGrad(self):
         d1 = np.random.uniform(0,10, size=(5,5))
-        t1 = sn.tensor(d1, requiresGrad=True)
+        t1 = sn.Tensor(d1, requiresGrad=True)
 
         t2 = t1.sum()
         t2.backwards()
@@ -48,12 +48,12 @@ class TestAutograd(TestCase):
         d1 = np.random.uniform(0,10, size=(5,5))
         d2 = np.random.uniform(0,10, size=(5,5))
 
-        t1 = sn.tensor(d1, requiresGrad=True)
-        t2 = sn.tensor(d2, requiresGrad=True)
+        t1 = sn.Tensor(d1, requiresGrad=True)
+        t2 = sn.Tensor(d2, requiresGrad=True)
 
         t3 = sn.matmul(t1, t2) # 5x5
 
-        initialGrad = sn.tensor(np.ones_like(t3.data))
+        initialGrad = sn.Tensor(np.ones_like(t3.data))
         t3.backwards(initialGrad)
 
         assert_array_equal(t1.grad.data, np.matmul(initialGrad.data, t2.data.T))
