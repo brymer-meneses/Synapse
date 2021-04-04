@@ -10,6 +10,26 @@ import numpy as np
 
 
 class Activation(Layer):
+    """Base class for activation layers
+       inherit this class to create your
+       own activation functions.
+
+       To do so, override the following methods:
+
+       - function -> takes in a numpy ndarray and
+                     transforms and returns that data.
+       - functionPrime -> the derivative of `function`
+
+       Example:
+        class Tanh(Activation):
+            def function(self, input: np.ndarray) -> np.ndarray:
+                result = np.tanh(input)
+                return result
+
+            def functionPrime(self, input: np.ndarray) -> np.ndarray:
+                y = self.function(input)
+                return 1 - y**2
+    """
 
     def __init__(self):
         return
