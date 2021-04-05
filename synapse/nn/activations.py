@@ -1,27 +1,48 @@
 
 from synapse.nn.layers import Layer
 from synapse.autograd.tensor import Tensor
+from synapse.autograd import TensorFunction
 
 import numpy as np
 
-class Activation(Operation):
+from typing import Callable
 
-    def operation(self, t1: "Tensor", t2: "Tensor") -> "Tensor":
-        raise NotImplementedError
 
-    def operationPrime(self, grad: np.ndarray, t1: "Tensor", t2: "Tensor") -> np.ndarray:
-        raise NotImplementedError
-
-class Tanh(Activation):
-
-    def operation(self, t1: "Tensor") -> "Tensor":
-        data = np.tanh(t1.data)
+class Tanh(TensorFunction):
+    def function(self, t1: Tensor) -> Tensor:
         requiresGrad = t1.requiresGrad
+        data = np.tanh(t1.data)
         resultTensor = Tensor(data, requiresGrad)
+        return resultTensor
 
-        return
+    def gradFn0(self, t1: Tensor) -> Callable[[np.ndarray, Tensor], Tensor]:
 
-    def operationPrime(self, grad: )
+        def tanhBackward(grad: np.ndarray) -> Tensor:
+            data = 1 - np.tanh(t1.data)**2
+            result = grad * data
+
+            return Tensor(result)
+
+        return tanhBackward
+
+class ReLU(TensorFunction):
+    def function(self, t1: Tensor) -> Tensor:
+        requiresGrad = t1.requiresGrad
+        data = np.where(t1.data < 0, 0 , t1.data)
+
+        resultTensor = Tensor(data, requiresGrad)
+        return resultTensor
+
+    def gradFn0(self, t1: Tensor) -> Callable[[np.ndarray, Tensor], Tensor]:
+
+        def reluBackward(grad: np.ndarray) -> Tensor:
+            data = np.where(t1.data < 0, 0, 1)
+            result = grad * data
+            return Tensor(result)
+
+        return reluBackward
+
+
 
 
 
