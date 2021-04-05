@@ -1,7 +1,7 @@
 
 from typing import Callable
 import numpy as np
-from .__operation import TensorFunction, TensorBinaryFunction
+from .__tensorFunctions import TensorFunction, TensorBinaryFunction
 
 
 class Sum(TensorFunction):

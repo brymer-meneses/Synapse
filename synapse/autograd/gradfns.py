@@ -51,7 +51,7 @@ def mulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
            dY/dA = B
            dY/dB = A
     """
-    return grad * t1.data
+    return Tensor(grad * t1.data)
 
 def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient Function that is used when

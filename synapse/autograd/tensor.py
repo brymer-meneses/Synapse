@@ -24,6 +24,9 @@ class Node(NamedTuple):
     tensor: 'Tensor'
     gradfn: Callable[['Tensor'], np.ndarray]
 
+    def __repr__(self):
+        return f"{self.tensor}, {self.gradfn.__name__}"
+
 
 class Tensor:
 

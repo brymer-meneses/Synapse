@@ -25,6 +25,7 @@ class TensorFunction(ABC):
 
 class TensorBinaryFunction(ABC):
     from synapse.autograd.tensor import Tensor, Node
+
     def __call__(self, t1: Tensor, t2: Tensor):
         from synapse.autograd.tensor import Node
 
@@ -35,7 +36,7 @@ class TensorBinaryFunction(ABC):
             node = Node(t1, self.gradFn0(t1, t2))
             resultTensor.addParent(node)
         if t2.requiresGrad:
-            node = Node(t1, self.gradFn1(t1, t2))
+            node = Node(t2, self.gradFn1(t1, t2))
             resultTensor.addParent(node)
 
         return resultTensor
