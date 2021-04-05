@@ -15,7 +15,7 @@ class Tanh(TensorFunction):
         resultTensor = Tensor(data, requiresGrad)
         return resultTensor
 
-    def gradFn0(self, t1: Tensor) -> Callable[[np.ndarray, Tensor], Tensor]:
+    def gradFn0(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
 
         def tanhBackward(grad: np.ndarray) -> Tensor:
             data = 1 - np.tanh(t1.data)**2
@@ -33,7 +33,7 @@ class ReLU(TensorFunction):
         resultTensor = Tensor(data, requiresGrad)
         return resultTensor
 
-    def gradFn0(self, t1: Tensor) -> Callable[[np.ndarray, Tensor], Tensor]:
+    def gradFn0(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
 
         def reluBackward(grad: np.ndarray) -> Tensor:
             data = np.where(t1.data < 0, 0, 1)
@@ -41,6 +41,22 @@ class ReLU(TensorFunction):
             return Tensor(result)
 
         return reluBackward
+
+
+class Softmax(TensorFunction):
+    def function(self, t1: Tensor) -> Tensor:
+        expData = np.exp(t1.data)
+        data = expData / np.sum(expData, axis=0)
+        requiresGrad = t1.requiresGrad
+        return Tensor(expData, requiresGrad)
+
+    def gradFn0(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
+        def SoftmaxBackward(grad: np.ndarray) -> Tensor:
+            """TODO"""
+            pass
+
+            return
+        return
 
 
 

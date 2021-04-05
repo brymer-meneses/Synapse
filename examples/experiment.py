@@ -11,7 +11,7 @@ import numpy as np
 class NeuralNet(Model):
     def __init__(self):
         self.linear1 = Linear(10, 5)
-        self.linear2 = Linear(5, 1)
+        self.linear2 = Linear(6, 1)
         self.linear3 = Linear(1,1)
 
     def forward(self, x):
@@ -23,24 +23,24 @@ class NeuralNet(Model):
 sgd = SGD(lr=0.002)
 model = NeuralNet()
 model.compile(sgd)
-# model.summary()
+model.summary()
 
 testData = Tensor(np.random.uniform(-10, 10, size=(10, 1)))
 output = model(testData)
 
-for node in output.parentNodes:
-    print(node)
+#for node in output.parentNodes:
+#   print(node)
 
-print(model.linear1.weights.grad)
-print(model.linear2.weights.grad)
-print(model.linear3.weights.grad)
+# print(model.linear1.weights.grad)
+# print(model.linear2.weights.grad)
+# print(model.linear3.weights.grad)
 
 output.backward(Tensor([[1.0]]))
-print("\n")
+model.optimize()
 
-print(model.linear1.weights.grad)
-print(model.linear2.weights.grad)
-print(model.linear3.weights.grad)
+# print(model.linear1.weights.grad)
+# print(model.linear2.weights.grad)
+# print(model.linear3.weights.grad)
 
 
 

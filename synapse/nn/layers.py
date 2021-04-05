@@ -1,8 +1,10 @@
-
+from abc import ABC, abstractmethod
 from synapse.autograd.tensor import Tensor
+
 import numpy as np
 
-class Layer:
+class Layer(ABC):
+    @abstractmethod
     def __init__(self,
                  inFeatures: int ,
                  outFeatures: int,
@@ -15,15 +17,14 @@ class Layer:
         self.__output = self.forward(x)
         return self.__output
 
+    @abstractmethod
     def forward(self, x: "Tensor") -> "Tensor":
         raise NotImplementedError
 
+    @abstractmethod
     def __str__(self) -> str:
         raise NotImplementedError
 
-    def backward(self, grad: 'Tensor') -> None:
-        self.__output.backward(grad)
-        return
 
 
 class Linear(Layer):
@@ -52,6 +53,10 @@ class Linear(Layer):
 
     def forward(self, x: 'Tensor') -> 'Tensor':
         """Forward Propagation"""
+
+        assert self.weights.shape[-1] == x.shape[0], \
+        f"""\nThe shape is not compatible with the this layers in features\n
+        Expected: ({self.weights.shape[-1]}, x) Got: ({x.shape[0]}, x)"""
 
         if self.useBias:
             output = self.weights @ x + self.bias

@@ -17,7 +17,7 @@ class Sum(TensorFunction):
 
 
     def gradFn0(self, t1: Tensor) -> Tensor:
-        from synapse.autograd.gradfns import sumBackward
+        from synapse.autograd.__gradFns import sumBackward
         from synapse.autograd.tensor import Tensor
 
         def SumBackward(grad: Tensor) -> Callable[[np.ndarray, Tensor], Tensor]:
@@ -42,7 +42,7 @@ class Add(TensorBinaryFunction):
 
 
     def gradFn0(self, t1: Tensor, t2: Tensor) -> Tensor:
-        from synapse.autograd.gradfns import addBackward
+        from synapse.autograd.__gradFns import addBackward
         from synapse.autograd.tensor import Tensor
 
         def AddBackward(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
@@ -51,7 +51,7 @@ class Add(TensorBinaryFunction):
         return AddBackward
 
     def gradFn1(self, t1: Tensor, t2: Tensor) -> Tensor:
-        from synapse.autograd.gradfns import addBackward
+        from synapse.autograd.__gradFns import addBackward
         from synapse.autograd.tensor import Tensor
 
         def AddBackward(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
@@ -76,7 +76,7 @@ class Mul(TensorBinaryFunction):
 
 
     def gradFn0(self, t1: Tensor, t2: Tensor) -> Tensor:
-        from synapse.autograd.gradfns import mulBackward0
+        from synapse.autograd.__gradFns import mulBackward0
         from synapse.autograd.tensor import Tensor
 
         def MulBackward0(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
@@ -85,7 +85,7 @@ class Mul(TensorBinaryFunction):
         return MulBackward0
 
     def gradFn1(self, t1: Tensor, t2: Tensor) -> Tensor:
-        from synapse.autograd.gradfns import mulBackward1
+        from synapse.autograd.__gradFns import mulBackward1
         from synapse.autograd.tensor import Tensor
 
         def MulBackward1(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
@@ -106,7 +106,7 @@ class MatMul(TensorBinaryFunction):
 
 
     def gradFn0(self, t1: Tensor, t2: Tensor) -> Tensor:
-        from synapse.autograd.gradfns import matmulBackward0
+        from synapse.autograd.__gradFns import matmulBackward0
         from synapse.autograd.tensor import Tensor
 
         def MatMulBackward0(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
@@ -115,7 +115,7 @@ class MatMul(TensorBinaryFunction):
         return MatMulBackward0
 
     def gradFn1(self, t1: Tensor, t2: Tensor) -> Tensor:
-        from synapse.autograd.gradfns import matmulBackward1
+        from synapse.autograd.__gradFns import matmulBackward1
         from synapse.autograd.tensor import Tensor
 
         def MatMulBackward1(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
