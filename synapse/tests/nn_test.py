@@ -27,7 +27,7 @@ class TestNN(TestCase):
         testData = Tensor(np.random.uniform(10, -10, size=(10,1)))
         output = model(testData)
         testGrad = Tensor(np.random.uniform(10, -10, size=(1,1)))
-        model.backwards(testGrad)
+        output.backward(testGrad)
         return
     def testModelCreation(self):
 

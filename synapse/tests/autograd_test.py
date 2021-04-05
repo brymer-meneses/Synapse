@@ -15,7 +15,7 @@ class TestAutograd(TestCase):
         t3 = t1 * t2 # 5x5
 
         initialGrad = sn.Tensor(np.ones_like(t1.data))
-        t3.backwards(initialGrad)
+        t3.backward(initialGrad)
 
         assert_array_equal(t1.grad.data, t2.data)
         assert_array_equal(t2.grad.data, t1.data)
@@ -29,7 +29,7 @@ class TestAutograd(TestCase):
         t3 = t1 + t2
 
         initialGrad = sn.Tensor(np.ones_like(t1.data))
-        t3.backwards(initialGrad)
+        t3.backward(initialGrad)
 
         assert_array_equal(t1.grad.data, np.ones_like(t2.data))
         assert_array_equal(t2.grad.data, np.ones_like(t1.data))
@@ -39,7 +39,7 @@ class TestAutograd(TestCase):
         t1 = sn.Tensor(d1, requiresGrad=True)
 
         t2 = t1.sum()
-        t2.backwards()
+        t2.backward()
 
         assert_array_equal(t2.grad.data, np.ones_like(t1.data))
         assert t2.requiresGrad == True
@@ -54,7 +54,7 @@ class TestAutograd(TestCase):
         t3 = sn.matmul(t1, t2) # 5x5
 
         initialGrad = sn.Tensor(np.ones_like(t3.data))
-        t3.backwards(initialGrad)
+        t3.backward(initialGrad)
 
         assert_array_equal(t1.grad.data, np.matmul(initialGrad.data, t2.data.T))
         assert_array_equal(t2.grad.data, np.matmul(t1.data.T, initialGrad.data))

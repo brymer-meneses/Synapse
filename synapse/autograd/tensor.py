@@ -74,7 +74,7 @@ class Tensor:
         from synapse.autograd.ops import tensorSum
         return tensorSum(self)
 
-    def backwards(self, grad: 'Tensor' = None) -> None:
+    def backward(self, grad: 'Tensor' = None) -> None:
         """Executes backpropagation and evaluates
            the gradients of Tensors with
            'requiresGrad = True'. """
@@ -96,11 +96,11 @@ class Tensor:
             # localGrad represents the derivative 
             # of this tensor with respect to 
             # its parent tensor
-            localGrad = Tensor(node.gradfn(grad.data))
+            localGrad = node.gradfn(grad.data)
 
             # Propagate gradients to the each parent 
             # node
-            node.tensor.backwards(localGrad)
+            node.tensor.backward(localGrad)
 
         return
 

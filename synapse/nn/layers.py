@@ -8,16 +8,22 @@ class Layer:
                  outFeatures: int,
                  useBias: bool =False,
                  name: str = "Layer" ) -> None:
+
         raise NotImplementedError
 
     def __call__(self, x: "Tensor") -> 'Tensor':
+        self.__output = self.forward(x)
+        return self.__output
+
+    def forward(self, x: "Tensor") -> "Tensor":
         raise NotImplementedError
 
     def __str__(self) -> str:
         raise NotImplementedError
 
-    def backwards(self, grad: 'Tensor') -> 'Tensor':
-        raise NotImplementedError
+    def backward(self, grad: 'Tensor') -> None:
+        self.__output.backward(grad)
+        return
 
 
 class Linear(Layer):
@@ -27,7 +33,7 @@ class Linear(Layer):
                  useBias: bool =False,
                  name: str = 'Linear') -> None:
 
-        self.useBias = useBias
+        self.__useBias = useBias
         self.__inFeatures = inFeatures
         self.__outFeatures = outFeatures
         self.__name = name
@@ -44,26 +50,19 @@ class Linear(Layer):
                 np.random.randn(out_features, 1),
                 requiresGrad=True)
 
-    def __call__(self, x: 'Tensor') -> 'Tensor':
+    def forward(self, x: 'Tensor') -> 'Tensor':
         """Forward Propagation"""
-        self.__input = x
 
-        if self.useBias:
-            self.__output = self.weights @ x + self.bias
+        if self.__useBias:
+            output = self.weights @ x + self.bias
         else:
-            self.__output = self.weights @ x
+            output = self.weights @ x
 
-        # self.weights.shape == out x in
-        # x.shape == in x num
-        # self.__output.shape == out x num
-        return self.__output
+        return output
 
     def __str__(self) -> str:
         return f'* {self.__name} = ({self.__inFeatures}, {self.__outFeatures})'
 
-    def backwards(self, grad: 'Tensor') -> None:
-        self.__output.backwards(grad)
-        return
 
 
 
