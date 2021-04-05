@@ -33,7 +33,7 @@ class Linear(Layer):
                  useBias: bool =False,
                  name: str = 'Linear') -> None:
 
-        self.__useBias = useBias
+        self.useBias = useBias
         self.__inFeatures = inFeatures
         self.__outFeatures = outFeatures
         self.__name = name
@@ -53,7 +53,7 @@ class Linear(Layer):
     def forward(self, x: 'Tensor') -> 'Tensor':
         """Forward Propagation"""
 
-        if self.__useBias:
+        if self.useBias:
             output = self.weights @ x + self.bias
         else:
             output = self.weights @ x
@@ -61,7 +61,7 @@ class Linear(Layer):
         return output
 
     def __str__(self) -> str:
-        return f'* {self.__name} = ({self.__inFeatures}, {self.__outFeatures})'
+        return f'{self.__name} = ({self.__inFeatures}, {self.__outFeatures})'
 
 
 

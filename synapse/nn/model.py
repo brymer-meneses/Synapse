@@ -25,10 +25,10 @@ class Model:
         if not self.__isCompiled:
             raise RuntimeError("Model not compiled")
         print("\n")
-        print("==================== Model ====================")
+        print("=================== Model =====================")
 
-        for layer in self.__layers:
-            print(layer)
+        for name, layer in self.__layers:
+            print(f"{name} : {layer}")
         print(self.__optimizer)
 
         print("==============================================")
@@ -40,17 +40,16 @@ class Model:
         attributes = vars(self)
         for key, value in attributes.items():
             if isinstance(value, Layer):
-                self.__layers.append(value)
+                self.__layers.append((key, value))
 
         self.__isCompiled = True
 
-        return
-
-    def backwards(self, grad: 'Tensor'):
-        lastLayer = self.__layers[-1]
-        lastLayer.backwards(grad)
+    def optimize(self) -> None:
+        for _, layer in self.__layers:
+            self.__optimizer.step(layer)
 
         return
+
 
 
 
