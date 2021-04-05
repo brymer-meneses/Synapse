@@ -4,7 +4,7 @@
 import numpy as np
 from synapse.autograd.tensor import Tensor
 
-def sumBackward(grad: np.ndarray, t1: 'Tensor') -> np.ndarray:
+def sumBackward(grad: np.ndarray, t1: 'Tensor') -> Tensor:
     """Gradient Function that is used when
        tensor.sum() is executed in the
        computation graph
@@ -12,9 +12,9 @@ def sumBackward(grad: np.ndarray, t1: 'Tensor') -> np.ndarray:
 
     """
 
-    return grad*np.ones_like(t1.data)
+    return Tensor(grad*np.ones_like(t1.data))
 
-def addBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+def addBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient function that is used when
        a tensor that requires gradient is added
        element wise to another tensor.
@@ -25,9 +25,9 @@ def addBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
            dY/dB = 1
     """
 
-    return grad
+    return Tensor(grad)
 
-def mulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+def mulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient function that is used when
        a tensor that requires gradient is multiplied
        element-wise to another tensor
@@ -38,9 +38,9 @@ def mulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
            dY/dA = B
            dY/dB = A
     """
-    return grad * t2.data
+    return Tensor(grad * t2.data)
 
-def mulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+def mulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient function that is used when
        a tensor that requires gradient is multiplied
        element-wise to another tensor
@@ -51,9 +51,9 @@ def mulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
            dY/dA = B
            dY/dB = A
     """
-    return grad * t1.data
+    return Tensor(grad * t1.data)
 
-def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient Function that is used when
        a tensor that requires gradient is matrix-multiplied
        to another tensor
@@ -81,10 +81,10 @@ def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
                            trying to perform matrix-multiplication two \
                            matrices with shape: {grad.shape} {t2.data.T.shape}")
 
-    return result
+    return Tensor(result)
 
 
-def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
+def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient Function that is used when
        a tensor is matrix multiplied to a tensor that
        requires gradient.
@@ -113,4 +113,4 @@ def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> np.ndarray:
                            matrices with shape: {t1.data.T.shape} {grad.shape}")
 
 
-    return result
+    return Tensor(result)

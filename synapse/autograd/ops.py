@@ -1,94 +1,129 @@
 
 from typing import Callable
 import numpy as np
+from .__tensorFunctions import TensorFunction, TensorBinaryFunction
 
 
-
-def tensorSum(t1: 'Tensor') -> 'Tensor': #type: ignore
-
+class Sum(TensorFunction):
     from synapse.autograd.tensor import Tensor, Node
-    from synapse.autograd.gradfns import sumBackward
-    from synapse import GradState
 
-    data = t1.data.sum()
-    requiresGrad = t1.requiresGrad
-    resultTensor: 'Tensor' = Tensor(data, requiresGrad)
+    def function(self, t1: Tensor) -> Tensor:
+        from synapse.autograd.tensor import Tensor
+        data = np.sum(t1.data)
+        requiresGrad = t1.requiresGrad
+        resultTensor = Tensor(data, requiresGrad)
 
-    if requiresGrad and GradState.evalGrad():
-        node = Node(t1, lambda grad: sumBackward(grad, t1))
-        resultTensor.addParent(node)
-
-    return resultTensor
+        return resultTensor
 
 
-def tensorAdd(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
-    """Performs element wise addition to two Tensors"""
+    def gradFn0(self, t1: Tensor) -> Tensor:
+        from synapse.autograd.gradfns import sumBackward
+        from synapse.autograd.tensor import Tensor
 
+        def SumBackward(grad: Tensor) -> Callable[[np.ndarray, Tensor], Tensor]:
+            return sumBackward(grad.data, t1)
+
+        return SumBackward
+
+class Add(TensorBinaryFunction):
     from synapse.autograd.tensor import Tensor, Node
-    from synapse.autograd.gradfns import addBackward
-    from synapse import GradState
 
-    if t1.shape == t2.shape:
-        data = t1.data + t2.data
-    else:
-        raise RuntimeError("Broadcasting not implemented")
-        pass
+    def function(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.tensor import Tensor
+        if not t1.shape == t2.shape:
+            raise RuntimeError("Broadcasting not Implemented (yet)")
+        else:
+            data = t1.data + t2.data
 
-    requiresGrad = t1.requiresGrad or t2.requiresGrad
-    resultTensor = Tensor(data, requiresGrad)
+        requiresGrad = t1.requiresGrad or t2.requiresGrad
+        resultTensor = Tensor(data, requiresGrad)
 
-    if t1.requiresGrad and GradState.evalGrad():
-        node = Node(t1, lambda grad: addBackward(grad, t1, t2))
-        resultTensor.addParent(node)
-    if t2.requiresGrad and GradState.evalGrad():
-        node = Node(t2, lambda grad: addBackward(grad, t1, t2))
-        resultTensor.addParent(node)
+        return resultTensor
 
-    return resultTensor
 
-def tensorMul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
+    def gradFn0(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.gradfns import addBackward
+        from synapse.autograd.tensor import Tensor
 
+        def AddBackward(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
+            return addBackward(grad.data, t1, t2)
+
+        return AddBackward
+
+    def gradFn1(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.gradfns import addBackward
+        from synapse.autograd.tensor import Tensor
+
+        def AddBackward(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
+            return addBackward(grad.data, t1, t2)
+
+        return AddBackward
+
+class Mul(TensorBinaryFunction):
     from synapse.autograd.tensor import Tensor, Node
-    from synapse.autograd.gradfns import mulBackward0, mulBackward1
-    from synapse import GradState
 
-    if t1.shape == t2.shape:
-        data = t1.data * t2.data
-    else:
-        raise RuntimeError("Broadcasting not implemented")
+    def function(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.tensor import Tensor
+        if not t1.shape == t2.shape:
+            raise RuntimeError("Broadcasting not Implemented (yet)")
+        else:
+            data = t1.data * t2.data
 
-    requiresGrad = t1.requiresGrad or t2.requiresGrad
-    resultTensor = Tensor(data, requiresGrad)
+        requiresGrad = t1.requiresGrad or t2.requiresGrad
+        resultTensor = Tensor(data, requiresGrad)
 
-    if t1.requiresGrad and GradState.evalGrad():
-        node = Node(t1, lambda grad: mulBackward0(grad, t1, t2))
-        resultTensor.addParent(node)
-    if t2.requiresGrad and GradState.evalGrad():
-        node = Node(t2, lambda grad: mulBackward1(grad, t1, t2))
-        resultTensor.addParent(node)
+        return resultTensor
 
-    return resultTensor
 
-def matmul(t1: 'Tensor', t2: 'Tensor') -> 'Tensor': #type: ignore
+    def gradFn0(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.gradfns import mulBackward0
+        from synapse.autograd.tensor import Tensor
+
+        def MulBackward0(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
+            return mulBackward0(grad.data, t1, t2)
+
+        return MulBackward0
+
+    def gradFn1(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.gradfns import mulBackward1
+        from synapse.autograd.tensor import Tensor
+
+        def MulBackward1(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
+            return mulBackward1(grad.data, t1, t2)
+        return MulBackward1
+
+class MatMul(TensorBinaryFunction):
     from synapse.autograd.tensor import Tensor, Node
-    from synapse.autograd.gradfns import matmulBackward1, matmulBackward0
-    from synapse import GradState
 
-    try:
+    def function(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.tensor import Tensor
         data = np.matmul(t1.data, t2.data)
-    except Exception as e:
-        raise RuntimeError(f"Caught Exception while trying to matrix-multiply tensors\n \
-                            t1: {t1.shape}, t2: {t2.shape}")
-    requiresGrad = t1.requiresGrad or t2.requiresGrad
-    resultTensor = Tensor(data, requiresGrad)
 
-    if t1.requiresGrad and GradState.evalGrad():
-        node = Node(t1, lambda grad: matmulBackward0(grad, t1, t2))
-        resultTensor.addParent(node)
-    if t2.requiresGrad and GradState.evalGrad():
-        node = Node(t2, lambda grad: matmulBackward1(grad, t1, t2))
-        resultTensor.addParent(node)
+        requiresGrad = t1.requiresGrad or t2.requiresGrad
+        resultTensor = Tensor(data, requiresGrad)
 
-    return resultTensor
+        return resultTensor
 
 
+    def gradFn0(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.gradfns import matmulBackward0
+        from synapse.autograd.tensor import Tensor
+
+        def MatMulBackward0(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
+            return matmulBackward0(grad.data, t1, t2)
+
+        return MatMulBackward0
+
+    def gradFn1(self, t1: Tensor, t2: Tensor) -> Tensor:
+        from synapse.autograd.gradfns import matmulBackward1
+        from synapse.autograd.tensor import Tensor
+
+        def MatMulBackward1(grad: Tensor) -> Callable[[np.ndarray, Tensor, Tensor], Tensor]:
+            return matmulBackward1(grad.data, t1, t2)
+
+        return MatMulBackward1
+
+tensorSum = Sum()
+tensorAdd = Add()
+tensorMul = Mul()
+matmul = MatMul()

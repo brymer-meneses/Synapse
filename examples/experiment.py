@@ -23,16 +23,20 @@ class NeuralNet(Model):
 sgd = SGD(lr=0.002)
 model = NeuralNet()
 model.compile(sgd)
-model.summary()
+# model.summary()
 
 testData = Tensor(np.random.uniform(-10, 10, size=(10, 1)))
 output = model(testData)
+
+for node in output.parentNodes:
+    print(node)
 
 print(model.linear1.weights.grad)
 print(model.linear2.weights.grad)
 print(model.linear3.weights.grad)
 
-output.backwards(Tensor([[1.0]]))
+output.backward(Tensor([[1.0]]))
+print("\n")
 
 print(model.linear1.weights.grad)
 print(model.linear2.weights.grad)
