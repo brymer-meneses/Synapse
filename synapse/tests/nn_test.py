@@ -4,6 +4,7 @@ from unittest import TestCase
 from synapse.nn.model import Model
 from synapse.nn.layers import Linear
 from synapse.nn.optimizers import SGD
+from synapse.nn.loss import MSE
 
 from synapse.autograd.tensor import Tensor
 
@@ -21,8 +22,9 @@ class TestNN(TestCase):
                 return x
 
         model = NN()
+        mse = MSE()
         sgd = SGD(lr=0.01)
-        model.compile(sgd)
+        model.compile(sgd, mse)
 
         testData = Tensor(np.random.uniform(10, -10, size=(10,1)))
         output = model(testData)
@@ -50,8 +52,9 @@ class TestNN(TestCase):
                 return x
 
         model = NN()
+        mse = MSE()
         sgd = SGD(lr=0.002)
-        model.compile(sgd)
+        model.compile(sgd, mse)
         # model.summary()
 
         testInput = Tensor(np.random.randn(64, 1))

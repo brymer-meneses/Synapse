@@ -7,20 +7,20 @@ class TensorFunction(ABC):
     def __call__(self, t1: Tensor):
         from synapse.autograd.tensor import Node
 
-        resultTensor = self.function(t1)
+        resultTensor = self.forward(t1)
 
         if t1.requiresGrad:
-            node = Node(t1, self.gradFn0(t1))
+            node = Node(t1, self.gradFn(t1))
             resultTensor.addParent(node)
 
         return resultTensor
 
     @abstractmethod
-    def function(self, t1: Tensor) -> Tensor:
+    def forward(self, t1: Tensor) -> Tensor:
         pass
 
     @abstractmethod
-    def gradFn0(self, t1: Tensor) -> Tensor:
+    def gradFn(self, t1: Tensor) -> Tensor:
         pass
 
 class TensorBinaryFunction(ABC):
@@ -30,7 +30,7 @@ class TensorBinaryFunction(ABC):
         from synapse.autograd.tensor import Node
 
 
-        resultTensor = self.function(t1, t2)
+        resultTensor = self.forward(t1, t2)
 
         if t1.requiresGrad:
             node = Node(t1, self.gradFn0(t1, t2))
@@ -42,7 +42,7 @@ class TensorBinaryFunction(ABC):
         return resultTensor
 
     @abstractmethod
-    def function(self, t1: Tensor, t2: Tensor) -> Tensor:
+    def forward(self, t1: Tensor, t2: Tensor) -> Tensor:
         pass
 
     @abstractmethod

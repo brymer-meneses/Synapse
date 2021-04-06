@@ -3,6 +3,7 @@ from unittest import TestCase
 
 from synapse import Tensor
 from synapse.nn.activations import Tanh, ReLU
+from synapse.nn.loss import MSE
 
 import numpy as np
 from numpy.testing import assert_array_equal

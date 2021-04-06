@@ -33,8 +33,8 @@ class Tensor:
     def __init__(self, data: Arrayable, requiresGrad: bool = False) -> None:
         from synapse import GradState
 
-        self.data = ensureArray(data)
-        self.shape = self.data.shape
+        self.__data = ensureArray(data)
+        self.shape = self.__data.shape
         self.grad: Optional['Tensor'] = None
         self.parentNodes: List[Node] = []
 
@@ -47,6 +47,16 @@ class Tensor:
             self.zeroGrad()
 
         return
+    @property
+    def data(self) -> None:
+        return self.__data
+    @data.setter
+    def data(self, newData) -> None:
+        assert isinstance(newData, (np.ndarray, np.float64)), ValueError(f"Expected tensor got, {type(newData)}")
+        self.__data = newData
+        self.shape = newData.shape
+        return
+
     def __repr__(self):
         return f"<Tensor: {self.shape}, requiresGrad: {self.requiresGrad}>"
 

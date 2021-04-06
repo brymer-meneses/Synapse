@@ -7,7 +7,7 @@ from .__tensorFunctions import TensorFunction, TensorBinaryFunction
 class Sum(TensorFunction):
     from synapse.autograd.tensor import Tensor, Node
 
-    def function(self, t1: Tensor) -> Tensor:
+    def forward(self, t1: Tensor) -> Tensor:
         from synapse.autograd.tensor import Tensor
         data = np.sum(t1.data)
         requiresGrad = t1.requiresGrad
@@ -16,7 +16,7 @@ class Sum(TensorFunction):
         return resultTensor
 
 
-    def gradFn0(self, t1: Tensor) -> Tensor:
+    def gradFn(self, t1: Tensor) -> Tensor:
         from synapse.autograd.__gradFns import sumBackward
         from synapse.autograd.tensor import Tensor
 
@@ -28,7 +28,7 @@ class Sum(TensorFunction):
 class Add(TensorBinaryFunction):
     from synapse.autograd.tensor import Tensor, Node
 
-    def function(self, t1: Tensor, t2: Tensor) -> Tensor:
+    def forward(self, t1: Tensor, t2: Tensor) -> Tensor:
         from synapse.autograd.tensor import Tensor
         if not t1.shape == t2.shape:
             raise RuntimeError("Broadcasting not Implemented (yet)")
@@ -62,7 +62,7 @@ class Add(TensorBinaryFunction):
 class Mul(TensorBinaryFunction):
     from synapse.autograd.tensor import Tensor, Node
 
-    def function(self, t1: Tensor, t2: Tensor) -> Tensor:
+    def forward(self, t1: Tensor, t2: Tensor) -> Tensor:
         from synapse.autograd.tensor import Tensor
         if not t1.shape == t2.shape:
             raise RuntimeError("Broadcasting not Implemented (yet)")
@@ -95,7 +95,7 @@ class Mul(TensorBinaryFunction):
 class MatMul(TensorBinaryFunction):
     from synapse.autograd.tensor import Tensor, Node
 
-    def function(self, t1: Tensor, t2: Tensor) -> Tensor:
+    def forward(self, t1: Tensor, t2: Tensor) -> Tensor:
         from synapse.autograd.tensor import Tensor
         data = np.matmul(t1.data, t2.data)
 

@@ -28,19 +28,8 @@ model.summary()
 testData = Tensor(np.random.uniform(-10, 10, size=(10, 1)))
 output = model(testData)
 
-#for node in output.parentNodes:
-#   print(node)
-
-# print(model.linear1.weights.grad)
-# print(model.linear2.weights.grad)
-# print(model.linear3.weights.grad)
-
 output.backward(Tensor([[1.0]]))
 model.optimize()
-
-# print(model.linear1.weights.grad)
-# print(model.linear2.weights.grad)
-# print(model.linear3.weights.grad)
 
 
 
