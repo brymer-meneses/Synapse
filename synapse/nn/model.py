@@ -20,20 +20,29 @@ class Model:
     def forward(self, x) -> Tensor:
         raise NotImplementedError
 
+    def zeroGrad(self) -> None:
+        for layer in self.layers:
+            if isinstance(layer, Layer):
+                layer.weights.zeroGrad()
+        return
+
     def fit(self, x_train: Tensor, y_train: Tensor, epochs: int) -> None:
         totalLoss = 0
         for epoch in range(epochs):
             epochLoss = 0
             output = self.forward(x_train)
+
             outputLoss = self.__loss(output, y_train)
             outputLoss.backward()
+
+            self.optimize()
 
             epochLoss += outputLoss.data
             totalLoss += epochLoss
 
-            print(f"{epoch} {outputLoss}")
+            print(f"{epoch} {epochLoss}")
 
-        print("Finished Training")
+        print("Finished Training ",totalLoss)
 
     def summary(self) -> None:
         if not self.__isCompiled:
@@ -41,8 +50,11 @@ class Model:
         print("\n")
         print("=================== Model =====================")
 
-        for name, layer in self.__layers:
-            print(f"{name} : {layer}")
+        attributes = vars(self)
+        for key, value in attributes.items():
+            if isinstance(value, (Layer, TensorFunction, TensorBinaryFunction)):
+                print(value)
+
         print(self.__optimizer)
 
         print("==============================================")
@@ -54,17 +66,18 @@ class Model:
         self.__optimizer = optimizer
         self.__loss = loss
 
-        self.__layers = []
+        self.layers = []
         attributes = vars(self)
         for key, value in attributes.items():
-            if isinstance(value, (Layer, TensorBinaryFunction, TensorFunction)):
-                self.__layers.append((key, value))
+            if isinstance(value, Layer):
+                self.layers.append((key, value))
 
         self.__isCompiled = True
 
     def optimize(self) -> None:
-        for _, layer in self.__layers:
-            self.__optimizer.step(layer)
+        for _, layer in self.layers:
+            if isinstance(layer, Layer):
+                self.__optimizer.step(layer)
 
         return
 

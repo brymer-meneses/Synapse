@@ -3,8 +3,8 @@ from typing import Callable, Union
 import numpy as np
 from .__tensorFunctions import TensorFunction, TensorBinaryFunction
 
-Number = Union(int, float)
-GradFn = Callable[[Tensor], Tensor]
+Number = Union[int, float]
+GradFn = Callable[['Tensor'], 'Tensor']
 
 class Sum(TensorFunction):
     from synapse.autograd.tensor import Tensor, Node
@@ -28,12 +28,14 @@ class Sum(TensorFunction):
         return SumBackward
 
 class Exponentiate(TensorFunction):
-    from synapse.autograd.tensor import Tensor
 
+    from synapse.autograd.tensor import Tensor
     def __call__(self, t1: Tensor, power: Number) -> Tensor:
+        from synapse.autograd.tensor import Tensor, Node
         resultTensor = self.forward(t1, power)
         if t1.requiresGrad:
-            resultTensor.addParent(self.gradFn(t1, power))
+            node = Node(t1, self.gradFn(t1, power))
+            resultTensor.addParent(node)
         return resultTensor
 
     def forward(self, t1: Tensor, power: Number) -> Tensor:
@@ -50,11 +52,11 @@ class Exponentiate(TensorFunction):
         from synapse.autograd.tensor import Tensor
 
         def ExpBackward(grad: Tensor) -> Tensor:
-            data = grad.data * power * (t1.data ** (power-1) )
+            data = grad.data * np.multiply(power, (t1.data ** (power-1)))
             requiresGrad = t1.requiresGrad
             return Tensor(data, requiresGrad)
 
-        return SumBackward
+        return ExpBackward
 
 class Mean(TensorFunction):
     from synapse.autograd.tensor import Tensor
@@ -69,7 +71,6 @@ class Mean(TensorFunction):
 
 
     def gradFn(self, t1: Tensor) -> GradFn:
-        from synapse.autograd.__gradFns import meanBackward
         from synapse.autograd.tensor import Tensor
 
         def MeanBackward(grad: Tensor) -> Tensor:
@@ -205,4 +206,4 @@ tensorMul = Mul()
 tensorNeg = Neg()
 tensorMean = Mean()
 matmul = MatMul()
-tensorExp = Exponentiate()
+power = Exponentiate()

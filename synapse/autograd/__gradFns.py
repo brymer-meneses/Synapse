@@ -4,6 +4,8 @@
 import numpy as np
 from synapse.autograd.tensor import Tensor
 
+# TODO Move this to .__ops for better access and readability
+
 def sumBackward(grad: np.ndarray, t1: 'Tensor') -> Tensor:
     """Gradient Function that is used when
        tensor.sum() is executed in the

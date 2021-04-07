@@ -1,5 +1,6 @@
 from synapse import Tensor, TensorFunction
 from synapse.autograd.tensor import Node
+import synapse as sn
 from abc import abstractmethod
 
 import numpy as np
@@ -7,44 +8,43 @@ from typing import Callable
 
 class Loss(TensorFunction):
     def __call__(self, predicted: Tensor, actual: Tensor) -> Tensor:
-        self.function(predicted, actual)
+        resultTensor = self.forward(predicted, actual)
         if predicted.requiresGrad:
-            node = Node(predicted, self.gradFn0(predicted))
-        return
+            node = Node(predicted, self.gradFn(predicted, actual))
+            resultTensor.addParent(node)
+        return resultTensor
 
     @abstractmethod
     def forward(self, predicted: Tensor, actual: Tensor) -> Tensor:
         return
 
     @abstractmethod
-    def gradFn0(self, predicted: Tensor, actual: Tensor) -> Tensor:
+    def gradFn(self, predicted: Tensor, actual: Tensor) -> Tensor:
         return
 
 
 
 
 
-class MSE(TensorFunction):
-    def __call__(self, predicted: Tensor, actual: Tensor) -> Tensor:
-        return self.function(predicted, actual)
+class MSE(Loss):
+
 
     def __str__(self) -> str:
         return "Mean Squared Error"
 
     def forward(self, predicted: Tensor, actual: Tensor) -> Tensor:
-        requiresGrad = predicted.requiresGrad
-        data = np.square(np.subtract(predicted.data, actual.data)).mean()
+        resultTensor = sn.power(predicted - actual, 2).mean()
 
-        return Tensor(data, requiresGrad)
+        return resultTensor
 
     def gradFn(self, predicted: Tensor, actual: Tensor) -> Callable[[np.ndarray], Tensor]:
 
         def mseBackward(grad: np.ndarray) -> Tensor:
-            data = 2 * np.subtract(predicted.data, actual.data).mean()
+            data = grad * (2 * np.subtract(predicted.data, actual.data)).mean()
             resultTensor = Tensor(data)
             return resultTensor
 
-        return
+        return mseBackward
 
 
 
