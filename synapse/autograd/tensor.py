@@ -96,8 +96,8 @@ class Tensor:
         return tensorNeg(self)
 
     def __pow__(self, power: Number) -> 'Tensor':
-        from synapse.autograd.__ops import tensorExp
-        return tensorExp(self, power)
+        from synapse.autograd.__ops import power
+        return power(self, power)
 
     def __matmul__(self, tensor: 'Tensor') -> 'Tensor':
         from synapse.autograd.__ops import matmul
