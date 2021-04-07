@@ -12,6 +12,7 @@ import numpy as np
 
 
 Arrayable = Union[float, list, np.ndarray]
+Number = Union[float, int]
 
 def ensureArray(arrayable: Arrayable) -> np.ndarray:
     if isinstance(arrayable, np.ndarray):
@@ -25,13 +26,15 @@ class Node(NamedTuple):
     gradfn: Callable[['Tensor'], np.ndarray]
 
     def __repr__(self):
-        return f"{self.tensor}, {self.gradfn.__name__}"
+        return f"[{repr(self.tensor)}, {self.gradfn.__name__}]"
 
 
 class Tensor:
 
     def __init__(self, data: Arrayable, requiresGrad: bool = False) -> None:
         from synapse import GradState
+        if isinstance(data, (str, Tensor, bool)):
+            raise ValueError(f"Passed in unsupported type for Tensor, got: {type(data)}")
 
         self.__data = ensureArray(data)
         self.shape = self.__data.shape
@@ -57,6 +60,11 @@ class Tensor:
         self.shape = newData.shape
         return
 
+    @property
+    def T(self) -> 'Tensor':
+        data = self.data.T
+        return Tensor(data)
+
     def __repr__(self):
         return f"<Tensor: {self.shape}, requiresGrad: {self.requiresGrad}>"
 
@@ -79,6 +87,18 @@ class Tensor:
         from synapse.autograd.__ops import tensorAdd
         return tensorAdd(self, tensor)
 
+    def __sub__(self, tensor: 'Tensor') -> 'Tensor':
+        from synapse.autograd.__ops import tensorAdd, tensorNeg
+        return tensorAdd(self, tensorNeg(tensor))
+
+    def __neg__(self) -> 'Tensor':
+        from synapse.autograd.__ops import tensorNeg
+        return tensorNeg(self)
+
+    def __pow__(self, power: Number) -> 'Tensor':
+        from synapse.autograd.__ops import tensorExp
+        return tensorExp(self, power)
+
     def __matmul__(self, tensor: 'Tensor') -> 'Tensor':
         from synapse.autograd.__ops import matmul
         return matmul(self, tensor)
@@ -86,6 +106,10 @@ class Tensor:
     def sum(self) -> 'Tensor':
         from synapse.autograd.__ops import tensorSum
         return tensorSum(self)
+
+    def mean(self) -> 'Tensor':
+        from synapse.autograd.__ops import tensorMean
+        return tensorMean(self)
 
     def backward(self, grad: 'Tensor' = None) -> None:
         """Executes backpropagation and evaluates
