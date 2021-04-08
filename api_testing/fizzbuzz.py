@@ -56,7 +56,7 @@ def generateData(nI: int, nF: int) -> List[Tensor]:
 
 
 model = NeuralNet()
-sgd = SGD(lr=-0.1)
+sgd = SGD(lr=0.1)
 mse = MSE()
 model.compile(sgd, mse)
 model.summary()
@@ -70,6 +70,8 @@ for epoch in range(100):
     loss = mse(output, y_train)
     loss.backward()
     model.optimize()
+    model.zeroGrad()
+    print(loss.data)
 
 print(model(Tensor([[15.0]])))
 

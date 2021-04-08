@@ -4,6 +4,7 @@ from unittest import TestCase
 import synapse as sn
 import numpy as np
 from numpy.testing import assert_array_equal
+from synapse.testing.graph import showParents
 
 class TestAutograd(TestCase):
     def testMulGrad(self):

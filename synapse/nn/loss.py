@@ -1,5 +1,6 @@
 from synapse import Tensor, TensorFunction
 from synapse.autograd.tensor import Node
+from synapse.autograd._differentiable import Differentiable
 import synapse as sn
 from abc import abstractmethod
 
@@ -25,7 +26,6 @@ class Loss(TensorFunction):
 
 
 
-
 class MSE(Loss):
 
 
@@ -33,14 +33,15 @@ class MSE(Loss):
         return "Mean Squared Error"
 
     def forward(self, predicted: Tensor, actual: Tensor) -> Tensor:
-        resultTensor = sn.power(predicted - actual, 2).mean()
-
+        resultTensor = sn.pow(predicted - actual, 2).mean()
+        # data = ((predicted.data - actual.data) ** 2).mean()
+        # return Tensor(data, predicted.requiresGrad)
         return resultTensor
 
-    def gradFn(self, predicted: Tensor, actual: Tensor) -> Callable[[np.ndarray], Tensor]:
+    def gradFn(self, predicted: Tensor, actual: Tensor) -> Callable[[Tensor], Tensor]:
 
-        def mseBackward(grad: np.ndarray) -> Tensor:
-            data = grad * (2 * np.subtract(predicted.data, actual.data)).mean()
+        def mseBackward(grad: Tensor) -> Tensor:
+            data = grad.data * (2 * (predicted.data - actual.data)).mean()
             resultTensor = Tensor(data)
             return resultTensor
 

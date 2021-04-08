@@ -3,10 +3,39 @@
 
 import numpy as np
 from synapse.autograd.tensor import Tensor
+from ._types import Number
 
-# TODO Move this to .__ops for better access and readability
+def powBackward(grad: Tensor, t1: Tensor, power: Number) -> Tensor:
+    """Gradient Function that is used when
+       tensor.pow(n) or tensor ** n is executed in the
+       computation graph
 
-def sumBackward(grad: np.ndarray, t1: 'Tensor') -> Tensor:
+    """
+    data = grad.data * np.multiply(power, (t1.data ** (power-1)))
+    requiresGrad = t1.requiresGrad
+    return Tensor(data, requiresGrad)
+
+def meanBackward(grad: Tensor, t1: Tensor) -> Tensor:
+    """Gradient Function that is used when
+       tensor.mean() is executed in the
+       computation graph
+
+    """
+    data = np.ones_like(t1.data) / np.size(t1.data)
+    data = grad.data * data
+    return Tensor(data)
+
+def negBackward(grad: Tensor, t1: Tensor) -> Tensor:
+    """Gradient Function that is used when
+       - tensor is executed in the
+       computation graph
+
+    """
+
+    data = np.negative(grad.data)
+    return Tensor(data, t1.requiresGrad)
+
+def sumBackward(grad: Tensor, t1: 'Tensor') -> Tensor:
     """Gradient Function that is used when
        tensor.sum() is executed in the
        computation graph
@@ -14,9 +43,9 @@ def sumBackward(grad: np.ndarray, t1: 'Tensor') -> Tensor:
 
     """
 
-    return Tensor(grad*np.ones_like(t1.data))
+    return Tensor(grad.data *np.ones_like(t1.data))
 
-def addBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
+def addBackward(grad: Tensor, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient function that is used when
        a tensor that requires gradient is added
        element wise to another tensor.
@@ -27,9 +56,9 @@ def addBackward(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
            dY/dB = 1
     """
 
-    return Tensor(grad)
+    return grad
 
-def mulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
+def mulBackward0(grad: Tensor, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient function that is used when
        a tensor that requires gradient is multiplied
        element-wise to another tensor
@@ -40,9 +69,9 @@ def mulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
            dY/dA = B
            dY/dB = A
     """
-    return Tensor(grad * t2.data)
+    return Tensor(grad.data * t2.data)
 
-def mulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
+def mulBackward1(grad: Tensor, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient function that is used when
        a tensor that requires gradient is multiplied
        element-wise to another tensor
@@ -53,9 +82,9 @@ def mulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
            dY/dA = B
            dY/dB = A
     """
-    return Tensor(grad * t1.data)
+    return Tensor(grad.data * t1.data)
 
-def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
+def matmulBackward0(grad: Tensor, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient Function that is used when
        a tensor that requires gradient is matrix-multiplied
        to another tensor
@@ -77,7 +106,7 @@ def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
            returns:
     """
     try:
-        result = np.matmul(grad, t2.data.T)
+        result = np.matmul(grad.data, t2.data.T)
     except:
         raise RuntimeError(f"Caught Exception while \
                            trying to perform matrix-multiplication two \
@@ -86,7 +115,7 @@ def matmulBackward0(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     return Tensor(result)
 
 
-def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
+def matmulBackward1(grad: Tensor, t1: 'Tensor', t2: 'Tensor') -> Tensor:
     """Gradient Function that is used when
        a tensor is matrix multiplied to a tensor that
        requires gradient.
@@ -108,7 +137,7 @@ def matmulBackward1(grad: np.ndarray, t1: 'Tensor', t2: 'Tensor') -> Tensor:
 
     """
     try:
-        result = np.matmul(t1.data.T, grad)
+        result = np.matmul(t1.data.T, grad.data)
     except:
         raise RuntimeError(f"Caught Exception while \
                            trying to perform matrix-multiplication two \

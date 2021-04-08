@@ -8,4 +8,4 @@ def showParents(tensor: Tensor, allNodes = []) -> None:
         for member in reversed(allNodes):
             print(member)
     else:
-        nodePrint(node.tensor)
+        showParents(node.tensor)

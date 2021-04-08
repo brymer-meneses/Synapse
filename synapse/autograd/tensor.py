@@ -80,36 +80,36 @@ class Tensor:
         return
 
     def __mul__(self, tensor: 'Tensor') -> 'Tensor':
-        from synapse.autograd.__ops import tensorMul
-        return tensorMul(self, tensor)
+        from synapse.autograd._ops import mul
+        return mul(self, tensor)
 
     def __add__(self, tensor: 'Tensor') -> 'Tensor':
-        from synapse.autograd.__ops import tensorAdd
-        return tensorAdd(self, tensor)
+        from synapse.autograd._ops import add
+        return add(self, tensor)
 
     def __sub__(self, tensor: 'Tensor') -> 'Tensor':
-        from synapse.autograd.__ops import tensorAdd, tensorNeg
-        return tensorAdd(self, tensorNeg(tensor))
+        from synapse.autograd._ops import add, neg
+        return add(self, neg(tensor))
 
     def __neg__(self) -> 'Tensor':
-        from synapse.autograd.__ops import tensorNeg
-        return tensorNeg(self)
+        from synapse.autograd._ops import neg
+        return neg(self)
 
     def __pow__(self, power: Number) -> 'Tensor':
-        from synapse.autograd.__ops import power
+        from synapse.autograd._ops import power
         return power(self, power)
 
     def __matmul__(self, tensor: 'Tensor') -> 'Tensor':
-        from synapse.autograd.__ops import matmul
+        from synapse.autograd._ops import matmul
         return matmul(self, tensor)
 
     def sum(self) -> 'Tensor':
-        from synapse.autograd.__ops import tensorSum
-        return tensorSum(self)
+        from synapse.autograd._ops import sum
+        return sum(self)
 
     def mean(self) -> 'Tensor':
-        from synapse.autograd.__ops import tensorMean
-        return tensorMean(self)
+        from synapse.autograd._ops import mean
+        return mean(self)
 
     def backward(self, grad: 'Tensor' = None) -> None:
         """Executes backpropagation and evaluates
@@ -133,7 +133,7 @@ class Tensor:
             # localGrad represents the derivative 
             # of this tensor with respect to 
             # its parent tensor
-            localGrad = node.gradfn(grad.data)
+            localGrad = node.gradfn(grad)
 
             # Propagate gradients to the each parent 
             # node

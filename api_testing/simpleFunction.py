@@ -18,7 +18,7 @@ W = Tensor(np.zeros_like(data),requiresGrad=True)
 y = Tensor(2*data)
 
  
-maxEpoch = 10000
+maxEpoch = 500
 lr = 0.01
 initialGrad = sn.Tensor([[1.0]])
 mse = MSE()

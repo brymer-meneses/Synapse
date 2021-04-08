@@ -20,9 +20,9 @@ class Tanh(TensorFunction):
 
     def gradFn(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
 
-        def tanhBackward(grad: np.ndarray) -> Tensor:
+        def tanhBackward(grad: Tensor) -> Tensor:
             data = 1 - np.tanh(t1.data)**2
-            result = grad * data
+            result = grad.data * data
 
             return Tensor(result)
 
@@ -41,9 +41,9 @@ class ReLU(TensorFunction):
 
     def gradFn(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
 
-        def reluBackward(grad: np.ndarray) -> Tensor:
+        def reluBackward(grad: Tensor) -> Tensor:
             data = np.where(t1.data < 0, 0, 1)
-            result = grad * data
+            result = grad.data * data
             return Tensor(result)
 
         return reluBackward
