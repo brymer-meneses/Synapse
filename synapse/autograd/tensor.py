@@ -96,8 +96,8 @@ class Tensor:
         return neg(self)
 
     def __pow__(self, power: Number) -> 'Tensor':
-        from synapse.autograd._ops import power
-        return power(self, power)
+        from synapse.autograd._ops import pow
+        return pow(self, power)
 
     def __matmul__(self, tensor: 'Tensor') -> 'Tensor':
         from synapse.autograd._ops import matmul
@@ -125,7 +125,7 @@ class Tensor:
 
         self.grad.data = self.grad.data + grad.data #type: ignore
 
-        for node in reversed(self.parentNodes):
+        for node in self.parentNodes:
 
             # Calculate the gradient of this node 
             # with respect to the parent node.
@@ -133,7 +133,10 @@ class Tensor:
             # localGrad represents the derivative 
             # of this tensor with respect to 
             # its parent tensor
+            #print(f"\ntransforming {grad}, using: ")
             localGrad = node.gradfn(grad)
+            #print(f"{node.gradfn.__name__}")
+            #print(localGrad)
 
             # Propagate gradients to the each parent 
             # node

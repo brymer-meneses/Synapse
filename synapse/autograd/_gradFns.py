@@ -11,15 +11,24 @@ def powBackward(grad: Tensor, t1: Tensor, power: Number) -> Tensor:
        computation graph
 
     """
+    print("==== From pow backward ==== ")
+    print("Arguments")
+    print("t1")
+    print(t1.data)
+    print("grad")
+    print(grad.data)
     data = grad.data * np.multiply(power, (t1.data ** (power-1)))
-    requiresGrad = t1.requiresGrad
-    return Tensor(data, requiresGrad)
-
-def subBackward(grad: Tensor, t1: Tensor, t2: Tensor) -> Tensor:
-    data = -grad.data
+    print("result")
+    print(data)
+    print("==== End pow backward ==== ")
     return Tensor(data)
 
+def subBackward0(grad: Tensor, t1: Tensor, t2: Tensor) -> Tensor:
+    return grad
 
+def subBackward1(grad: Tensor, t1: Tensor, t2: Tensor) -> Tensor:
+    data = np.negative(grad.data)
+    return Tensor(data)
 
 def meanBackward(grad: Tensor, t1: Tensor) -> Tensor:
     """Gradient Function that is used when

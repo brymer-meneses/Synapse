@@ -2,13 +2,13 @@
 from ._differentiable import Differentiable
 from ._gradFns import sumBackward, addBackward, mulBackward0, mulBackward1, \
                        powBackward, meanBackward, matmulBackward0, matmulBackward1, \
-                      negBackward, subBackward
+                      negBackward, subBackward0, subBackward1
 from ._types import Number
 
 import numpy as np
 from synapse import Tensor
 
-@Differentiable(subBackward)
+@Differentiable(subBackward0, subBackward1)
 def sub(t1: Tensor ,t2: Tensor) -> Tensor:
     data = t1.data + np.negative(t2.data)
     requiresGrad = t1.requiresGrad or t2.requiresGrad
