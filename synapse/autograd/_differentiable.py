@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Callable
 from ._types import GradFn
+from functools import wraps
 
 def _package(gradfn, *args) -> GradFn:
     from synapse import Tensor
@@ -23,54 +24,54 @@ def _getTensorArgs(*args) -> List['Tensor']:
             result.append(arg)
     return result
 
-class Differentiable(object):
-    from synapse.autograd.tensor import Tensor
+def Differentiable(gradFn0: Callable, gradFn1: Callable=None) -> Callable:
 
-    def __init__(self, function, gradFn0, gradFn1=None):
-        self.function = function
-        self.gradFn0 = gradFn0
-        self.gradFn1 = gradFn1
+    def decorator(TensorFunction: Callable) -> Callable:
+        from synapse.autograd.tensor import Node, Tensor
 
-    def __call__(self, *args) -> Tensor:
-        from synapse.autograd.tensor import Node
-        resultTensor = self.function(*args)
+        @wraps(TensorFunction)
+        def wrapper(*args) -> Tensor:
+            tensorArgs = _getTensorArgs(*args)
+            totalTensorArgs = len(tensorArgs)
 
-        tensors = _getTensorArgs(*args)
+            resultTensor = TensorFunction(*args)
 
-        # Handle when len(tensors) is not possible
-        # because there were no tensors passed.
-        if len(tensors) == 0:
-            raise ValueError("Expected tensor argument got None")
+            if totalTensorArgs == 0:
+                raise ValueError(f"No Tensor arguments were passed to {function.__name__}")
 
-        elif len(tensors) > 2:
-            raise ValueError(f"Maximum number of tensor arguments is 2 got {len(tensors)}")
+            elif totalTensorArgs > 2:
+                raise ValueError(f"Expected < 2 tensor arguments got {totalTensorArgs}")
 
-        elif len(tensors) == 1:
-            if tensors[0].requiresGrad:
-                node = Node(tensors[0], _package(self.gradFn0, *args))
-                resultTensor.addParent(node)
+            elif totalTensorArgs == 1:
+                t1 = tensorArgs[0]
 
-        # Check if it is a binary tensor function
-        elif len(tensors) == 2:
-            if tensors[0].requiresGrad:
-                node = Node(tensors[0], _package(self.gradFn0, *args))
-                resultTensor.addParent(node)
+                if t1.requiresGrad:
+                    node = Node(t1, _package(gradFn0, *args))
+                    resultTensor._addParent(node)
+            else:
+                t1, t2 = tensorArgs
 
-            if tensors[1].requiresGrad:
-                if self.gradFn1 is None:
-                    # Defaults to the first gradient function if 
-                    # two tensors are passed and gradFn1 is not 
-                    # provided.
-                    # This is useful in the case of the tensor add 
-                    # function, which has the same gradient irrespective 
-                    # of the tensor arguments
-                    node = Node(tensors[1], _package(self.gradFn0, *args))
-                else:
-                    node = Node(tensors[1], _package(self.gradFn1, *args))
-                resultTensor.addParent(node)
+                if t1.requiresGrad:
+                    node = Node(t1, _package(gradFn0, *args))
+                    resultTensor._addParent(node)
 
+                if t2.requiresGrad:
+                    if gradFn1 is None:
+                        # Defaults to the first gradient function if 
+                        # two tensors are passed and gradFn1 is not 
+                        # provided.
+                        # This is useful in the case of the tensor add 
+                        # function, which has the same gradient irrespective 
+                        # of the tensor arguments
+                        node = Node(t2, _package(gradFn0, *args))
+                    else:
+                        node = Node(t2, _package(gradFn1, *args))
+                    resultTensor._addParent(node)
 
-        return resultTensor
+            return resultTensor
+        return wrapper
+
+    return decorator
 
 
 

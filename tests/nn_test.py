@@ -22,9 +22,8 @@ class TestNN(TestCase):
                 return x
 
         model = NN()
-        mse = MSE()
         sgd = SGD(lr=0.01)
-        model.compile(sgd, mse)
+        model.compile(sgd, MSE)
 
         testData = Tensor(np.random.uniform(10, -10, size=(10,1)))
         output = model(testData)
@@ -52,9 +51,8 @@ class TestNN(TestCase):
                 return x
 
         model = NN()
-        mse = MSE()
         sgd = SGD(lr=0.002)
-        model.compile(sgd, mse)
+        model.compile(sgd, MSE )
         # model.summary()
 
         testInput = Tensor(np.random.randn(64, 1))

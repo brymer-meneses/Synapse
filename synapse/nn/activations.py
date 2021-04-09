@@ -1,55 +1,35 @@
 
 from synapse.nn.layers import Layer
 from synapse.autograd.tensor import Tensor
-from synapse.autograd import TensorFunction
+
+from synapse.autograd._differentiable import Differentiable
 
 import numpy as np
 
 from typing import Callable
 
+def tanhBackward(grad: Tensor, t1: Tensor) -> Tensor:
+    data = grad.data * (1 - np.tanh(t1.data) ** 2)
+    return Tensor(data)
 
-class Tanh(TensorFunction):
-    def forward(self, t1: Tensor) -> Tensor:
-        requiresGrad = t1.requiresGrad
-        data = np.tanh(t1.data)
-        resultTensor = Tensor(data, requiresGrad)
-        return resultTensor
+@Differentiable(tanhBackward)
+def Tanh(t1: Tensor) -> Tensor:
+    data = np.tanh(t1.data)
+    requiresGrad = t1.requiresGrad
 
-    def __str__(self) -> str:
-        return f"Tanh Activation Layer"
+    return Tensor(data, requiresGrad)
 
-    def gradFn(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
+def reluBackward(grad: Tensor, t1: Tensor) -> Tensor:
+    data = grad.data * np.where(t1.data > 0, 1, 0)
+    return Tensor(data)
 
-        def tanhBackward(grad: Tensor) -> Tensor:
-            data = 1 - np.tanh(t1.data)**2
-            result = grad.data * data
-
-            return Tensor(result)
-
-        return tanhBackward
-
-class ReLU(TensorFunction):
-    def forward(self, t1: Tensor) -> Tensor:
-        requiresGrad = t1.requiresGrad
-        data = np.where(t1.data < 0, 0 , t1.data)
-
-        resultTensor = Tensor(data, requiresGrad)
-        return resultTensor
-
-    def __str__(self) -> str:
-        return f"ReLU Activation Layer"
-
-    def gradFn(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
-
-        def reluBackward(grad: Tensor) -> Tensor:
-            data = np.where(t1.data < 0, 0, 1)
-            result = grad.data * data
-            return Tensor(result)
-
-        return reluBackward
+@Differentiable(reluBackward)
+def ReLU(t1: Tensor) -> Tensor:
+    data = np.where(t1.data > 0, t1.data, 0)
+    return Tensor(data, t1.requiresGrad)
 
 
-class Softmax(TensorFunction):
+class Softmax():
     def forward(self, t1: Tensor) -> Tensor:
         expData = np.exp(t1.data)
         data = expData / np.sum(expData, axis=0)

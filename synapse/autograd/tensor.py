@@ -71,7 +71,7 @@ class Tensor:
     def __str__(self):
         return f"Tensor, requiresGrad={self.requiresGrad} \n{str(self.data)}"
 
-    def addParent(self, node: Node) -> None:
+    def _addParent(self, node: Node) -> None:
         self.parentNodes.append(node)
         return
 
@@ -88,8 +88,8 @@ class Tensor:
         return add(self, tensor)
 
     def __sub__(self, tensor: 'Tensor') -> 'Tensor':
-        from synapse.autograd._ops import add, neg
-        return add(self, neg(tensor))
+        from synapse.autograd._ops import sub
+        return sub(self, tensor)
 
     def __neg__(self) -> 'Tensor':
         from synapse.autograd._ops import neg

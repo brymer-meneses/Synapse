@@ -1,9 +1,9 @@
 from typing import Union
 
-from synapse import TensorFunction, TensorBinaryFunction
 from synapse.autograd.tensor import Tensor
 from synapse.nn.layers import Layer
 from synapse.nn.optimizers import Optimizer
+from synapse.autograd._differentiable import Differentiable
 
 class Model:
 
@@ -22,8 +22,7 @@ class Model:
 
     def zeroGrad(self) -> None:
         for layer in self.layers:
-            if isinstance(layer, Layer):
-                layer.weights.zeroGrad()
+            layer.zeroGrad()
         return
 
     def fit(self, x_train: Tensor, y_train: Tensor, epochs: int) -> None:
@@ -52,22 +51,23 @@ class Model:
 
         attributes = vars(self)
         for key, value in attributes.items():
-            if isinstance(value, (Layer, TensorFunction, TensorBinaryFunction)):
+            if isinstance(value, (Layer, Differentiable)):
                 print(value)
 
         print(self.__optimizer)
 
         print("==============================================")
 
-    def compile(self, optimizer: Optimizer, loss: TensorFunction) -> None:
+    def compile(self, optimizer: Optimizer, loss: Differentiable) -> None:
         assert isinstance(optimizer, Optimizer), ValueError(f"Expected Optimizer received {type(optimizer)}")
-        assert isinstance(loss, TensorFunction), ValueError(f"Expected TensorFunction received {type(loss)}")
+        #assert isinstance(loss, (Differentiable)), ValueError(f"Expected TensorFunction received {type(loss)}")
 
         self.__optimizer = optimizer
         self.__loss = loss
 
         self.layers = []
         attributes = vars(self)
+
         for key, value in attributes.items():
             if isinstance(value, Layer):
                 self.layers.append((key, value))

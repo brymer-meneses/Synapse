@@ -1,4 +1,4 @@
-import pytest
+# import pytest
 from unittest import TestCase
 
 import synapse as sn
@@ -9,16 +9,15 @@ from synapse.testing.graph import showParents
 
 class TestLoss(TestCase):
     def testMSE(self):
-        mse = MSE()
-        data1 = np.random.uniform(-10, 10, size=(3,3))
-        data2 = np.random.uniform(-10, 10, size=(3,3))
+        data1 = np.random.uniform(-10, 10, size=(5,5))
+        data2 = np.random.uniform(-10, 10, size=(5,5))
         a = sn.Tensor(data1, True)
         b = sn.Tensor(data2, False)
-        c = mse(a, b)
+        c = MSE(a, b)
         showParents(c)
         c.backward()
 
-        realGrad = np.multiply(2, (data1 - data2).mean())
+        realGrad = np.multiply(2, (a.data - b.data).mean())
 
 
         assert_array_equal(a.grad.data, realGrad)

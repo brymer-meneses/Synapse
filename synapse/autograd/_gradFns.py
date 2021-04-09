@@ -15,6 +15,12 @@ def powBackward(grad: Tensor, t1: Tensor, power: Number) -> Tensor:
     requiresGrad = t1.requiresGrad
     return Tensor(data, requiresGrad)
 
+def subBackward(grad: Tensor, t1: Tensor, t2: Tensor) -> Tensor:
+    data = -grad.data
+    return Tensor(data)
+
+
+
 def meanBackward(grad: Tensor, t1: Tensor) -> Tensor:
     """Gradient Function that is used when
        tensor.mean() is executed in the
@@ -33,7 +39,8 @@ def negBackward(grad: Tensor, t1: Tensor) -> Tensor:
     """
 
     data = np.negative(grad.data)
-    return Tensor(data, t1.requiresGrad)
+    print(data)
+    return Tensor(data)
 
 def sumBackward(grad: Tensor, t1: 'Tensor') -> Tensor:
     """Gradient Function that is used when

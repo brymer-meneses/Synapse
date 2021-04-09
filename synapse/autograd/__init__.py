@@ -1,2 +1,2 @@
 from .tensor import Tensor
-from ._tensorFunctions import TensorFunction, TensorBinaryFunction
+from ._differentiable import Differentiable

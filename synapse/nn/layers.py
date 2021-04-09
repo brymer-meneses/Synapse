@@ -17,6 +17,9 @@ class Layer(ABC):
         self.__output = self.forward(x)
         return self.__output
 
+    def zeroGrad(self) -> None:
+        raise NotImplementedError
+
     @abstractmethod
     def forward(self, x: "Tensor") -> "Tensor":
         raise NotImplementedError
@@ -67,6 +70,12 @@ class Linear(Layer):
 
     def __str__(self) -> str:
         return f'{self.__name} = ({self.__inFeatures}, {self.__outFeatures})'
+
+    def zeroGrad(self) -> None:
+        self.weights.zeroGrad()
+        if self.useBias:
+            self.bias.zeroGrad()
+        return
 
 
 
