@@ -11,16 +11,16 @@ def powBackward(grad: Tensor, t1: Tensor, power: Number) -> Tensor:
        computation graph
 
     """
-    print("==== From pow backward ==== ")
-    print("Arguments")
-    print("t1")
-    print(t1.data)
-    print("grad")
-    print(grad.data)
+    #print("==== From pow backward ==== ")
+    #print("Arguments")
+    #print("t1")
+    #print(t1.data)
+    #print("grad")
+    #print(grad.data)
     data = grad.data * np.multiply(power, (t1.data ** (power-1)))
-    print("result")
-    print(data)
-    print("==== End pow backward ==== ")
+    #print("result")
+    #print(data)
+    #print("==== End pow backward ==== ")
     return Tensor(data)
 
 def subBackward0(grad: Tensor, t1: Tensor, t2: Tensor) -> Tensor:
