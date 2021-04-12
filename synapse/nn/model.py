@@ -21,7 +21,7 @@ class Model:
         raise NotImplementedError
 
     def zeroGrad(self) -> None:
-        for layer in self.layers:
+        for _, layer in self.layers:
             layer.zeroGrad()
         return
 
@@ -51,15 +51,16 @@ class Model:
 
         attributes = vars(self)
         for key, value in attributes.items():
-            if isinstance(value, (Layer, Differentiable)):
+            if isinstance(value, Layer):
                 print(value)
 
         print(self.__optimizer)
+        print(self.__loss.__name__) 
 
         print("==============================================")
 
     def compile(self, optimizer: Optimizer, loss: Differentiable) -> None:
-        assert isinstance(optimizer, Optimizer), ValueError(f"Expected Optimizer received {type(optimizer)}")
+        #assert isinstance(optimizer, Optimizer), ValueError(f"Expected Optimizer received {type(optimizer)}")
         #assert isinstance(loss, (Differentiable)), ValueError(f"Expected TensorFunction received {type(loss)}")
 
         self.__optimizer = optimizer

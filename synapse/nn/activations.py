@@ -25,7 +25,7 @@ def reluBackward(grad: Tensor, t1: Tensor) -> Tensor:
 
 @Differentiable(reluBackward)
 def ReLU(t1: Tensor) -> Tensor:
-    data = np.where(t1.data > 0, t1.data, 0)
+    data = np.maximum(0, t1.data, t1.data) # Use in place operation
     return Tensor(data, t1.requiresGrad)
 
 
