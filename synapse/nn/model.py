@@ -20,31 +20,31 @@ class Model:
     def forward(self, x) -> Tensor:
         raise NotImplementedError
 
-    def zeroGrad(self) -> None:
+    def zero_grad(self) -> None:
         for _, layer in self.layers:
-            layer.zeroGrad()
+            layer.zero_grad()
         return
 
     def fit(self, x_train: Tensor, y_train: Tensor, epochs: int) -> None:
         totalLoss = 0
         for epoch in range(epochs):
-            epochLoss = 0
+            epoch_loss = 0
             output = self.forward(x_train)
 
-            outputLoss = self.__loss(output, y_train)
-            outputLoss.backward()
+            output_loss = self._loss(output, y_train)
+            output_loss.backward()
 
             self.optimize()
 
-            epochLoss += outputLoss.data
-            totalLoss += epochLoss
+            epoch_loss += output_loss.data
+            total_loss += epoch_loss
 
-            print(f"{epoch} {epochLoss}")
+            print(f"{epoch} {epoch_loss}")
 
-        print("Finished Training ",totalLoss)
+        print("Finished Training ",total_loss)
 
     def summary(self) -> None:
-        if not self.__isCompiled:
+        if not self.__is_compiled:
             raise RuntimeError("Model not compiled")
         print("\n")
         print("=================== Model =====================")
@@ -54,8 +54,8 @@ class Model:
             if isinstance(value, Layer):
                 print(value)
 
-        print(self.__optimizer)
-        print(self.__loss.__name__) 
+        print(self._optimizer)
+        print(self._loss.__name__) 
 
         print("==============================================")
 
@@ -73,7 +73,7 @@ class Model:
             if isinstance(value, Layer):
                 self.layers.append((key, value))
 
-        self.__isCompiled = True
+        self.__is_compiled = True
 
     def optimize(self) -> None:
         for _, layer in self.layers:

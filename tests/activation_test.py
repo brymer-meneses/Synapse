@@ -14,7 +14,7 @@ class TestActivations(TestCase):
 
 
     def testTanh(self):
-        testData = Tensor(np.random.uniform(-10, 10, size=(5,5)), requiresGrad =True)
+        testData = Tensor(np.random.uniform(-10, 10, size=(5,5)), requires_grad =True)
         y = Tanh(testData)
 
         initialGrad = Tensor(np.ones_like(testData.data))
@@ -25,14 +25,12 @@ class TestActivations(TestCase):
 
         return
     def testReLU(self):
-        testData = Tensor(np.random.uniform(-10, 10, size=(5,5)), requiresGrad=True)
+        testData = Tensor(np.random.uniform(-10, 10, size=(5,5)), requires_grad=True)
         correctResult = np.where(testData.data > 0, testData.data, 0)
         y = ReLU(testData)
 
         initialGrad = Tensor(np.ones_like(testData.data))
         y.backward(initialGrad)
-        print("Relo")
-        showParents(y)
 
         assert_array_equal(y.data, correctResult)
         assert_array_equal(testData.grad.data, np.where(testData.data>0, 1, 0))

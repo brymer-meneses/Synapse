@@ -12,16 +12,16 @@ class TestGradMode(TestCase):
         with sn.NoGrad():
 
 
-            a = sn.Tensor(data1, requiresGrad=True)
-            b = sn.Tensor(data2, requiresGrad=True)
+            a = sn.Tensor(data1, requires_grad=True)
+            b = sn.Tensor(data2, requires_grad=True)
             c = a.sum()
             d = a + b
             e = sn.matmul(a, b)
             f = a * b
 
-            assert a.requiresGrad == False
-            assert b.requiresGrad == False
-            assert c.requiresGrad == False
-            assert d.requiresGrad == False
-            assert e.requiresGrad == False
-            assert f.requiresGrad == False
+            assert a.requires_grad == False
+            assert b.requires_grad == False
+            assert c.requires_grad == False
+            assert d.requires_grad == False
+            assert e.requires_grad == False
+            assert f.requires_grad == False

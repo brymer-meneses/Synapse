@@ -11,32 +11,32 @@ from synapse import Tensor
 @Differentiable(subBackward0, subBackward1)
 def sub(t1: Tensor ,t2: Tensor) -> Tensor:
     data = t1.data + np.negative(t2.data)
-    requiresGrad = t1.requiresGrad or t2.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad = t1.requires_grad or t2.requires_grad
+    return Tensor(data, requires_grad)
 
 @Differentiable(sumBackward)
 def sum(t1: Tensor) -> Tensor:
     data = np.sum(t1.data)
-    requiresGrad = t1.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad = t1.requires_grad
+    return Tensor(data, requires_grad)
 
 @Differentiable(powBackward)
 def pow(t1: Tensor, power: Number) -> Tensor:
     data = t1.data ** power
-    requiresGrad = t1.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad = t1.requires_grad
+    return Tensor(data, requires_grad)
 
 @Differentiable(meanBackward)
 def mean(t1: Tensor) -> Tensor:
     data = np.mean(t1.data)
-    requiresGrad = t1.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad = t1.requires_grad
+    return Tensor(data, requires_grad)
 
 @Differentiable(negBackward)
 def neg(t1: Tensor) -> Tensor:
     data = np.negative(t1.data)
-    requiresGrad =  t1.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad =  t1.requires_grad
+    return Tensor(data, requires_grad)
 
 @Differentiable(addBackward)
 def add(t1: Tensor, t2: Tensor) -> Tensor:
@@ -45,15 +45,15 @@ def add(t1: Tensor, t2: Tensor) -> Tensor:
     else:
         data = t1.data + t2.data
 
-    requiresGrad = t1.requiresGrad or t2.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad = t1.requires_grad or t2.requires_grad
+    return Tensor(data, requires_grad)
 
 @Differentiable(matmulBackward0, matmulBackward1)
 def matmul(t1: Tensor, t2: Tensor) -> Tensor:
     data = np.matmul(t1.data, t2.data)
 
-    requiresGrad = t1.requiresGrad or t2.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad = t1.requires_grad or t2.requires_grad
+    return Tensor(data, requires_grad)
 
 @Differentiable(mulBackward0, mulBackward1)
 def mul(t1: Tensor, t2: Tensor) -> Tensor:
@@ -62,6 +62,6 @@ def mul(t1: Tensor, t2: Tensor) -> Tensor:
     else:
         data = t1.data * t2.data
 
-    requiresGrad = t1.requiresGrad or t2.requiresGrad
-    return Tensor(data, requiresGrad)
+    requires_grad = t1.requires_grad or t2.requires_grad
+    return Tensor(data, requires_grad)
 

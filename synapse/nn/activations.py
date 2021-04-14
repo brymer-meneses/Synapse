@@ -15,9 +15,9 @@ def tanhBackward(grad: Tensor, t1: Tensor) -> Tensor:
 @Differentiable(tanhBackward)
 def Tanh(t1: Tensor) -> Tensor:
     data = np.tanh(t1.data)
-    requiresGrad = t1.requiresGrad
+    requires_grad = t1.requires_grad
 
-    return Tensor(data, requiresGrad)
+    return Tensor(data, requires_grad)
 
 def reluBackward(grad: Tensor, t1: Tensor) -> Tensor:
     data = grad.data * np.where(t1.data > 0, 1, 0)
@@ -26,15 +26,15 @@ def reluBackward(grad: Tensor, t1: Tensor) -> Tensor:
 @Differentiable(reluBackward)
 def ReLU(t1: Tensor) -> Tensor:
     data = np.maximum(0, t1.data, t1.data) # Use in place operation
-    return Tensor(data, t1.requiresGrad)
+    return Tensor(data, t1.requires_grad)
 
 
 class Softmax():
     def forward(self, t1: Tensor) -> Tensor:
         expData = np.exp(t1.data)
         data = expData / np.sum(expData, axis=0)
-        requiresGrad = t1.requiresGrad
-        return Tensor(expData, requiresGrad)
+        requires_grad = t1.requires_grad
+        return Tensor(expData, requires_grad)
 
     def gradFn(self, t1: Tensor) -> Callable[[np.ndarray], Tensor]:
         def SoftmaxBackward(grad: np.ndarray) -> Tensor:

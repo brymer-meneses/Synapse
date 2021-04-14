@@ -14,7 +14,7 @@ import numpy as np
 Arrayable = Union[float, list, np.ndarray]
 Number = Union[float, int]
 
-def ensureArray(arrayable: Arrayable) -> np.ndarray:
+def ensure_array(arrayable: Arrayable) -> np.ndarray:
     if isinstance(arrayable, np.ndarray):
         return arrayable
     else:
@@ -31,33 +31,33 @@ class Node(NamedTuple):
 
 class Tensor:
 
-    def __init__(self, data: Arrayable, requiresGrad: bool = False) -> None:
+    def __init__(self, data: Arrayable, requires_grad: bool = False) -> None:
         from synapse import GradState
         if isinstance(data, (str, Tensor, bool)):
             raise ValueError(f"Passed in unsupported type for Tensor, got: {type(data)}")
 
-        self.__data = ensureArray(data)
+        self.__data = ensure_array(data)
         self.shape = self.__data.shape
         self.grad: Optional['Tensor'] = None
-        self.parentNodes: List[Node] = []
+        self._parent_nodes: List[Node] = []
 
         if GradState.evalGrad():
-            self.requiresGrad = requiresGrad
+            self.requires_grad = requires_grad
         else:
-            self.requiresGrad = False
+            self.requires_grad = False
 
-        if self.requiresGrad:
-            self.zeroGrad()
+        if self.requires_grad:
+            self.zero_grad()
 
         return
     @property
     def data(self) -> None:
         return self.__data
     @data.setter
-    def data(self, newData) -> None:
-        assert isinstance(newData, (np.ndarray, np.float64)), ValueError(f"Expected tensor got, {type(newData)}")
-        self.__data = newData
-        self.shape = newData.shape
+    def data(self, new_data) -> None:
+        assert isinstance(new_data, (np.ndarray, np.float64)), ValueError(f"Expected tensor got, {type(new_data)}")
+        self.__data = new_data
+        self.shape = new_data.shape
         return
 
     @property
@@ -66,16 +66,16 @@ class Tensor:
         return Tensor(data)
 
     def __repr__(self):
-        return f"<Tensor: {self.shape}, requiresGrad: {self.requiresGrad}>"
+        return f"<Tensor: {self.shape}, requires_grad: {self.requires_grad}>"
 
     def __str__(self):
-        return f"Tensor, requiresGrad={self.requiresGrad} \n{str(self.data)}"
+        return f"Tensor, requires_grad={self.requires_grad} \n{str(self.data)}"
 
-    def _addParent(self, node: Node) -> None:
-        self.parentNodes.append(node)
+    def _add_parent(self, node: Node) -> None:
+        self._parent_nodes.append(node)
         return
 
-    def zeroGrad(self) -> None:
+    def zero_grad(self) -> None:
         self.grad = Tensor(np.zeros_like(self.data, dtype=np.float64))
         return
 
@@ -115,7 +115,7 @@ class Tensor:
         """Executes backpropagation and evaluates
            the gradients of Tensors with
            'requiresGrad = True'. """
-        assert self.requiresGrad == True, "Called backwards on a tensor that doesn't require gradients"
+        assert self.requires_grad == True, "Called backwards on a tensor that doesn't require gradients"
 
         if grad is None:
             if self.shape == ():
@@ -125,22 +125,22 @@ class Tensor:
 
         self.grad.data = self.grad.data + grad.data #type: ignore
 
-        for node in self.parentNodes:
+        for node in self._parent_nodes:
 
             # Calculate the gradient of this node 
             # with respect to the parent node.
 
-            # localGrad represents the derivative 
+            # local_grad represents the derivative 
             # of this tensor with respect to 
             # its parent tensor
             #print(f"\ntransforming {grad}, using: ")
-            localGrad = node.gradfn(grad)
+            local_grad = node.gradfn(grad)
             #print(f"{node.gradfn.__name__}")
             #print(localGrad)
 
             # Propagate gradients to the each parent 
             # node
-            node.tensor.backward(localGrad)
+            node.tensor.backward(local_grad)
 
         return
 

@@ -5,18 +5,18 @@ from functools import wraps
 def _package(gradfn, *args) -> GradFn:
     from synapse import Tensor
 
-    def packagedGradFn(grad: Tensor) -> Tensor:
+    def packaged_gradfn(grad: Tensor) -> Tensor:
         return gradfn(grad, *args)
 
     # Changes the name of packagedGradFn to gradfn
     # this makes the debugging process much easier 
     # especially if we want to look at the computation
     # graph.
-    packagedGradFn.__name__ = gradfn.__name__
+    packaged_gradfn.__name__ = gradfn.__name__
 
-    return packagedGradFn
+    return packaged_gradfn
 
-def _getTensorArgs(*args) -> List['Tensor']:
+def _get_tensor_args(*args) -> List['Tensor']:
     from synapse import Tensor
     result = []
     for arg in args:
@@ -31,31 +31,31 @@ def Differentiable(gradFn0: Callable, gradFn1: Callable=None) -> Callable:
 
         @wraps(TensorFunction)
         def wrapper(*args) -> Tensor:
-            tensorArgs = _getTensorArgs(*args)
-            totalTensorArgs = len(tensorArgs)
+            tensor_args = _get_tensor_args(*args)
+            total_tensor_args = len(tensor_args)
 
-            resultTensor = TensorFunction(*args)
+            result_tensor = TensorFunction(*args)
 
-            if totalTensorArgs == 0:
+            if total_tensor_args == 0:
                 raise ValueError(f"No Tensor arguments were passed to {function.__name__}")
 
-            elif totalTensorArgs > 2:
-                raise ValueError(f"Expected < 2 tensor arguments got {totalTensorArgs}")
+            elif total_tensor_args > 2:
+                raise ValueError(f"Expected < 2 tensor arguments got {total_tensor_args}")
 
-            elif totalTensorArgs == 1:
-                t1 = tensorArgs[0]
+            elif total_tensor_args == 1:
+                t1 = tensor_args[0]
 
-                if t1.requiresGrad:
+                if t1.requires_grad:
                     node = Node(t1, _package(gradFn0, *args))
-                    resultTensor._addParent(node)
+                    result_tensor._add_parent(node)
             else:
-                t1, t2 = tensorArgs
+                t1, t2 = tensor_args
 
-                if t1.requiresGrad:
+                if t1.requires_grad:
                     node = Node(t1, _package(gradFn0, *args))
-                    resultTensor._addParent(node)
+                    result_tensor._add_parent(node)
 
-                if t2.requiresGrad:
+                if t2.requires_grad:
                     if gradFn1 is None:
                         # Defaults to the first gradient function if 
                         # two tensors are passed and gradFn1 is not 
@@ -66,9 +66,9 @@ def Differentiable(gradFn0: Callable, gradFn1: Callable=None) -> Callable:
                         node = Node(t2, _package(gradFn0, *args))
                     else:
                         node = Node(t2, _package(gradFn1, *args))
-                    resultTensor._addParent(node)
+                    result_tensor._add_parent(node)
 
-            return resultTensor
+            return result_tensor
         return wrapper
 
     return decorator

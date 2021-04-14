@@ -1,11 +1,11 @@
 from synapse import Tensor
 
-def showParents(tensor: Tensor, allNodes = []) -> None:
-    for node in tensor.parentNodes:
-        allNodes.append(node)
+def showParents(tensor: Tensor, all_nodes = []) -> None:
+    for node in tensor._parent_nodes:
+        all_nodes.append(node)
 
-    if tensor.parentNodes == []:
-        for member in reversed(allNodes):
+    if tensor._parent_nodes == []:
+        for member in reversed(all_nodes):
             print(member)
     else:
         showParents(node.tensor)

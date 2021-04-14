@@ -32,27 +32,27 @@ class Layer(ABC):
 
 class Linear(Layer):
     def __init__(self,
-                 inFeatures: int,
-                 outFeatures: int,
-                 useBias: bool =False,
+                 in_features: int,
+                 out_features: int,
+                 use_bias: bool =False,
                  name: str = 'Linear') -> None:
 
-        self.useBias = useBias
-        self.__inFeatures = inFeatures
-        self.__outFeatures = outFeatures
-        self.__name = name
+        self._use_bias = use_bias
+        self._in_features = in_features
+        self._out_features = out_features
+        self._name = name
 
         self.weights = Tensor(
-            data=np.random.randn(outFeatures, inFeatures),
-            requiresGrad=True)
+            data=np.random.randn(out_features, in_features),
+            requires_grad=True)
 
-        if useBias:
+        if use_bias:
 
             # self.bias must handle broadcasting
             # but idk how to implement it
             self.bias = Tensor(
                 np.random.randn(out_features, 1),
-                requiresGrad=True)
+                requires_grad=True)
 
     def forward(self, x: 'Tensor') -> 'Tensor':
         """Forward Propagation"""
@@ -61,7 +61,7 @@ class Linear(Layer):
         f"""\nThe shape is not compatible with the this layers in features\n
         Expected: ({self.weights.shape[-1]}, x) Got: ({x.shape[0]}, x)"""
 
-        if self.useBias:
+        if self._use_bias:
             output = self.weights @ x + self.bias
         else:
             output = self.weights @ x
@@ -69,12 +69,12 @@ class Linear(Layer):
         return output
 
     def __str__(self) -> str:
-        return f'{self.__name} = ({self.__inFeatures}, {self.__outFeatures})'
+        return f'{self__name} = ({self._in_features}, {self._out_features})'
 
-    def zeroGrad(self) -> None:
-        self.weights.zeroGrad()
+    def zero_grad(self) -> None:
+        self.weights.zero_grad()
         if self.useBias:
-            self.bias.zeroGrad()
+            self.bias.zero_grad()
         return
 
 
