@@ -69,11 +69,11 @@ class Linear(Layer):
         return output
 
     def __str__(self) -> str:
-        return f'{self__name} = ({self._in_features}, {self._out_features})'
+        return f'{self._name} = ({self._in_features}, {self._out_features})'
 
     def zero_grad(self) -> None:
         self.weights.zero_grad()
-        if self.useBias:
+        if self._use_bias:
             self.bias.zero_grad()
         return
 

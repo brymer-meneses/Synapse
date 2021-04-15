@@ -22,7 +22,7 @@ class SGD(Optimizer):
     def step(self, layer: Layer) -> None:
 
         layer.weights.data = layer.weights.data - self.__lr * layer.weights.grad.data
-        if layer.use_bias:
+        if layer._use_bias:
             layer.bias.data = layer.bias.data - self.__lr * layer.bias.grad.data
 
         return
@@ -39,7 +39,7 @@ class GDM(Optimizer):
 
     def step(self, layer: Layer) -> None:
         
-        if layer.use_bias:
+        if layer._use_bias:
             self._Vw = self._beta * self._Vw + (1 - self._beta) * self._Vw
             self._Vb = self._beta * self._Vb + (1 - self._beta) * self._Vb
 

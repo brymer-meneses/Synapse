@@ -6,10 +6,10 @@ import synapse as sn
 from synapse import Tensor 
 from synapse.nn.layers import Linear
 from synapse.nn.activations import ReLU, Tanh
-from synapse.nn.optimizers import SGD
+from synapse.nn.optimizers import SGD, GDM
 from synapse.nn.loss import MSE
 from synapse.nn.data import BatchIterator
-from synapse.testing import showParents
+from synapse.debugging import show_parents
 
 import numpy as np
 import pandas as pd 
@@ -39,15 +39,18 @@ class NeuralNet(sn.nn.Model):
         final = Tanh(outL4)
         return final
 
-LR = 0.00001
+LR = 0.01
+BETA = 0.7
+ALPHA = 0.8
 MAX_EPOCHS = 100
+#optim = GDM(LR, BETA, ALPHA)
+optim = SGD(LR)
 
 model = NeuralNet()
-model.compile(SGD(LR), MSE)
+model.compile(optim, MSE)
 model.summary()
 
 batch_iterator = BatchIterator(128)
-optim = SGD(lr = 0.01)
 
 for epoch in range(MAX_EPOCHS):
     epoch_loss = 0
@@ -57,18 +60,14 @@ for epoch in range(MAX_EPOCHS):
         loss = MSE(output, targets)
         loss.backward()
 
-
-
-
-        for _, layer in model.layers:
-            optim.step(layer)
-            layer.zeroGrad()
+        model.optimize()
+        model.zero_grad()
             
-
         if count % 100 == 0:
             print("\tloss: ",loss.data)
+        epoch_loss = epoch_loss + loss.data
             
-    print(f"\n=> Epoch: {epoch}")
+    print(f"\n=> Epoch: {epoch}, loss: {epoch_loss}")
 
 
     

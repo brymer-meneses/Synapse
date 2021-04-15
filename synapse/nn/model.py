@@ -54,8 +54,8 @@ class Model:
             if isinstance(value, Layer):
                 print(value)
 
-        print(self._optimizer)
-        print(self._loss.__name__) 
+        print(self.__optimizer)
+        print(self.__loss.__name__) 
 
         print("==============================================")
 
