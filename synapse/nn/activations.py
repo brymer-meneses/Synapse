@@ -1,8 +1,8 @@
 
 from synapse.nn.layers import Layer
-from synapse.autograd.tensor import Tensor
+from synapse.core.tensor import Tensor
 
-from synapse.autograd._differentiable import Differentiable
+from synapse.core.differentiable import Differentiable
 
 import numpy as np
 

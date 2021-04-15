@@ -1,9 +1,9 @@
 from typing import Union
 
-from synapse.autograd.tensor import Tensor
+from synapse.core.tensor import Tensor
 from synapse.nn.layers import Layer
 from synapse.nn.optimizers import Optimizer
-from synapse.autograd._differentiable import Differentiable
+from synapse.core.differentiable import Differentiable
 
 class Model:
 

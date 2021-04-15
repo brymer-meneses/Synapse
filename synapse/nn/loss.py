@@ -1,5 +1,5 @@
-from synapse.autograd.tensor import Node, Tensor
-from synapse.autograd._differentiable import Differentiable
+from synapse.core.tensor import Node, Tensor
+from synapse.core.differentiable import Differentiable
 import synapse as sn
 from abc import abstractmethod
 

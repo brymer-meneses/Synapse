@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from synapse.autograd.tensor import Tensor
+from synapse.core.tensor import Tensor
 
 import numpy as np
 
