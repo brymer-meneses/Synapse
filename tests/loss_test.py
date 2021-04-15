@@ -5,7 +5,7 @@ import synapse as sn
 import numpy as np
 from numpy.testing import assert_array_equal
 from synapse.nn.loss import MSE
-from synapse.testing.graph import showParents
+from synapse.debugging import show_parents
 
 # class TestLoss(TestCase):
 #     def testMSE(self):

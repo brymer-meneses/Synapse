@@ -9,7 +9,7 @@ class TestGradMode(TestCase):
     def testNoGrad(self):
         data1 = np.random.uniform(-10, 10, size=(5,5))
         data2 = np.random.uniform(-10, 10, size=(5,5))
-        with sn.NoGrad():
+        with sn.no_grad():
 
 
             a = sn.Tensor(data1, requires_grad=True)

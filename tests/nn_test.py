@@ -6,7 +6,7 @@ from synapse.nn.layers import Linear
 from synapse.nn.optimizers import SGD
 from synapse.nn.loss import MSE
 
-from synapse.autograd.tensor import Tensor
+from synapse.core.tensor import Tensor
 
 import numpy as np
 

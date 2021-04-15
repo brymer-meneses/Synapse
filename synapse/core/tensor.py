@@ -32,7 +32,6 @@ class Node(NamedTuple):
 class Tensor:
 
     def __init__(self, data: Arrayable, requires_grad: bool = False) -> None:
-        from synapse import GradState
         if isinstance(data, (str, Tensor, bool)):
             raise ValueError(f"Passed in unsupported type for Tensor, got: {type(data)}")
 
@@ -41,7 +40,9 @@ class Tensor:
         self.grad: Optional['Tensor'] = None
         self._parent_nodes: List[Node] = []
 
-        if GradState.evalGrad():
+        from synapse import grad_state
+
+        if grad_state.is_recording:
             self.requires_grad = requires_grad
         else:
             self.requires_grad = False
